@@ -9,6 +9,9 @@ using UnityEngine;
 
 public class RelayManager : MonoBehaviour
 {
+	private string _joinCode = string.Empty;
+	public string JoinCode {  get { return _joinCode; }}
+
     // Start is called before the first frame update
     async void Start()
     {
@@ -24,9 +27,9 @@ public class RelayManager : MonoBehaviour
     {
         var allocation = await RelayService.Instance.CreateAllocationAsync(4);
 
-        string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+		_joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-        Debug.Log(joinCode);
+        Debug.Log( _joinCode );
 
         var unityTranport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         if (host)
