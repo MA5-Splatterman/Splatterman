@@ -18,7 +18,12 @@ public class SpawnController : MonoBehaviour
 	private void IncreaseSpawnIndex() {
 		_spawnIndex = (_spawnIndex + 1 < _spawnLocations.Count ) ? _spawnIndex + 1: 0;
 	}
-
+	/// <summary>
+	/// Accepts GameObject playerPrefab to spawn, should flip every other time it is run. 
+	/// </summary>
+	/// <param name="_playerPrefab"></param>
+	//[ServerRpc]
+	//public void SpawnPlayerServerRpc(GameObject _playerPrefab) {
 	public void SpawnPlayer(GameObject _playerPrefab) {
 		Vector2 _spawnLocation = _spawnLocations[_spawnIndex].position;
 		
