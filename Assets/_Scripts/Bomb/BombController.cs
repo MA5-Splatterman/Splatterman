@@ -129,8 +129,9 @@ public class BombController : NetworkBehaviour
     {
         if (IsServer)
         {
-            GameObject GO = Instantiate(explosion);
-            GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
+			GameObject GO = Instantiate(explosion);
+			GO.GetComponent<NetworkObject>().Spawn(  );
+			GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
             Destroy(gameObject);
         }
     }

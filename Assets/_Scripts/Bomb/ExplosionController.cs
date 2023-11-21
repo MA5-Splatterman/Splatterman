@@ -126,6 +126,10 @@ public class ExplosionController : NetworkBehaviour
         for (int i = 0; i < explosionLength; i++)
         {
             GameObject _explosion = Instantiate(explosion);
+			if(_explosion.TryGetComponent<NetworkObject>(out NetworkObject netObj )){ 
+				netObj.Spawn();
+			}
+
             SpriteRenderer renderer = _explosion.GetComponent<SpriteRenderer>();
             renderer.sprite = (i == explosionLength - 1) ? end : line;
             renderer.material = spriteRenderer.material;
