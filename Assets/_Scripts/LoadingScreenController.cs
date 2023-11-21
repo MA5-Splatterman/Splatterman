@@ -25,14 +25,6 @@ public class LoadingScreenController : MonoBehaviour
 		SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Host;
 	}
 
-	private void SetInterfaceJoinCode () {
-		var _interfaceController = FindAnyObjectByType<InterfaceController>();
-
-		if ( _interfaceController != default ) {
-			_interfaceController.SetJoinCode( relayManager.JoinCode );
-		}
-	}
-
 	public async void StartClient () {
 		if ( code.text != string.Empty ) { 
 			await relayManager.JoinRelay( code.text );
@@ -52,6 +44,16 @@ public class LoadingScreenController : MonoBehaviour
         NetworkManager.Singleton.StartServer();
 		SetInterfaceJoinCode();
 		SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Server;
-    }
+	}
+	/// <summary>
+	/// Sets the join code displayed in the interface on the host/server
+	/// </summary>
+	private void SetInterfaceJoinCode () {
+		var _interfaceController = FindAnyObjectByType<InterfaceController>();
+
+		if ( _interfaceController != default ) {
+			_interfaceController.SetJoinCode( relayManager.JoinCode );
+		}
+	}
 }
 
