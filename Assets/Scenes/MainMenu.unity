@@ -711,9 +711,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1963451828}
+  - component: {fileID: 1963451830}
   - component: {fileID: 1963451827}
   - component: {fileID: 1963451826}
-  - component: {fileID: 1963451830}
   - component: {fileID: 1963451829}
   m_Layer: 0
   m_Name: NetworkManager
