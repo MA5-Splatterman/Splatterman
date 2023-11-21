@@ -21,6 +21,12 @@ public class LoadingScreenController : MonoBehaviour
     private void SceneManager_sceneLoaded_Host(Scene arg0, LoadSceneMode arg1)
     {
         NetworkManager.Singleton.StartHost();
+		var _interfaceController = FindAnyObjectByType<InterfaceController>();
+
+		if ( _interfaceController != default) {
+			_interfaceController.SetJoinCode( relayManager.JoinCode ); 
+		}
+
         SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Host;
     }
 
