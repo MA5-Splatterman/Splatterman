@@ -383,7 +383,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7950713046502275591, guid: 1d7d3069f3bd8e44e8961bc22c5128b5, type: 3}
       propertyPath: m_Name
-      value: Canvas
+      value: LoadingScreenCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 8510444222843740674, guid: 1d7d3069f3bd8e44e8961bc22c5128b5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
