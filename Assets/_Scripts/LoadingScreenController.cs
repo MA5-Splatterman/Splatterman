@@ -18,17 +18,20 @@ public class LoadingScreenController : MonoBehaviour
         SceneManager.sceneLoaded += SceneManager_sceneLoaded_Host;
     }
 
-    private void SceneManager_sceneLoaded_Host(Scene arg0, LoadSceneMode arg1)
-    {
-        NetworkManager.Singleton.StartHost();
+    private void SceneManager_sceneLoaded_Host(Scene arg0, LoadSceneMode arg1) {
+		NetworkManager.Singleton.StartHost();
+		SetInterfaceJoinCode();
+
+		SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Host;
+	}
+
+	private void SetInterfaceJoinCode () {
 		var _interfaceController = FindAnyObjectByType<InterfaceController>();
 
-		if ( _interfaceController != default) {
-			_interfaceController.SetJoinCode( relayManager.JoinCode ); 
+		if ( _interfaceController != default ) {
+			_interfaceController.SetJoinCode( relayManager.JoinCode );
 		}
-
-        SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Host;
-    }
+	}
 
 	public async void StartClient () {
 		if ( code.text != string.Empty ) { 
@@ -47,7 +50,8 @@ public class LoadingScreenController : MonoBehaviour
     private void SceneManager_sceneLoaded_Server(Scene arg0, LoadSceneMode arg1)
     {
         NetworkManager.Singleton.StartServer();
-        SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Server;
+		SetInterfaceJoinCode();
+		SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Server;
     }
 }
 
