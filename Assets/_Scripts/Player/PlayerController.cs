@@ -13,73 +13,80 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private int bombRange;
     [SerializeField] private bool canKickBombs;
     [SerializeField] private bool bombsPierce;
-    [SerializeField] private TeamColor team;
+
+    private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
 
     [Header("Project Variables")]
     [SerializeField] private Animator anim;
     [SerializeField] private Rigidbody2D rb2d;
-    [SerializeField] private GameObject bomb;
+    [SerializeField] private GameObject bombPrefab;
     [SerializeField] private Material red, blue;
     [SerializeField] private SpriteRenderer suit;
-
 
     // Other variables
     private PlayerControls input;
     private Vector2 movementVector = Vector2.zero;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
         input = new PlayerControls();
-    }
-
-    private void OnEnable()
-    {
-        input.Enable();
-        input.Player.Movement.performed += OnMovementPerformed;
-        input.Player.Movement.canceled += OnMovementCancelled;
-        input.Player.DropBomb.performed += DropBomb;
+        Debug.Log(IsClient );
+        Debug.Log(IsLocalPlayer );
+        Debug.Log(IsOwner);
+        Debug.Log(IsOwnedByServer);
+        if (IsOwner && IsClient)
+        {
+            Debug.Log("Controls Enabled");
+            input.Enable();
+            input.Player.Movement.performed += OnMovementPerformed;
+            input.Player.Movement.canceled += OnMovementCancelled;
+            input.Player.DropBomb.performed += OnDropBombPerformed;
+        }
     }
 
     private void OnDisable()
     {
-        input.Disable();
-        input.Player.Movement.performed -= OnMovementPerformed;
-        input.Player.Movement.canceled -= OnMovementCancelled;
-        input.Player.DropBomb.performed -= DropBomb;
+        if (IsOwner && IsClient)
+        {
+            input.Disable();
+            input.Player.Movement.performed -= OnMovementPerformed;
+            input.Player.Movement.canceled -= OnMovementCancelled;
+            input.Player.DropBomb.performed -= OnDropBombPerformed;
+        }
     }
 
     public void AssignTeam(TeamColor color)
     {
-        switch (color)
+        team.Value = color;
+        UpdateTeamColor();
+    }
+
+    private void UpdateTeamColor()
+    {
+        switch (team.Value)
         {
             case TeamColor.RED:
                 suit.color = Color.red;
-                team = TeamColor.RED;
                 break;
 
             case TeamColor.BLUE:
                 suit.color = Color.blue;
-                team = TeamColor.BLUE;
                 break;
         }
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        MovePlayer(movementVector);
-        
+        if ((IsOwner & IsClient))
+        {
+            MovePlayer(movementVector);
+        }
     }
 
     private void OnMovementPerformed(InputAction.CallbackContext context)
     {
+        Debug.Log("Hey Im working");
         movementVector = context.ReadValue<Vector2>();
         anim.SetFloat("vertical", movementVector.y);
         anim.SetFloat("horizontal", movementVector.x);
@@ -92,13 +99,24 @@ public class PlayerController : NetworkBehaviour
 
     private void MovePlayer(Vector2 direction)
     {
-        rb2d.velocity = (Vector3)direction * moveSpeed;
+        rb2d.velocity = direction * moveSpeed;
     }
 
-    private void DropBomb(InputAction.CallbackContext context)
+    private void OnDropBombPerformed(InputAction.CallbackContext context)
     {
-        GameObject GO = Instantiate(bomb);
-        BombController bombController =  GO.GetComponent<BombController>();
-        bombController.BombPlaced(team, (Vector2)transform.position);
+        if ((IsOwner & IsClient))
+        {
+            DropBombServerRpc((Vector2)transform.position);
+        }
+    }
+
+    [ServerRpc]
+    private void DropBombServerRpc(Vector2 position)
+    {
+        GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
+        bomb.GetComponent<NetworkObject>().Spawn();
+        BombController bombController = bomb.GetComponent<BombController>();
+        bombController.BombPlaced(team.Value, position);
+        
     }
 }

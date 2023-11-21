@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UIElements;
+using Unity.Netcode;
 
 public enum TeamColor
 {
@@ -10,13 +9,13 @@ public enum TeamColor
     BLUE
 }
 
-public class BombController : MonoBehaviour
+public class BombController : NetworkBehaviour
 {
     [SerializeField] Grid grid;
 
     [SerializeField] private GameObject explosion;
 
-    [SerializeField] private TeamColor team;
+    private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
 
     [SerializeField] private Material red, blue;
 
@@ -27,30 +26,21 @@ public class BombController : MonoBehaviour
     [SerializeField] private int bombExplosionRange = 2;
     [SerializeField] private float bombFuse = 5;
 
-    private void Start()
-    {
-        //var particleMain = bombParticle.main;
-        //particleMain.stopAction = ParticleSystemStopAction.Callback;
-        //BombPlaced(TeamColor.BLUE);
-        //bombParticle.Emit(1);
-        //bombParticle.Stop();
-        //var particleEmission = bombParticle.emission;
-        //particleEmission.enabled = false;
-    }
-
     public void BombPlaced(TeamColor _team, Vector2 position)
     {
-        transform.position = position;
-        var particleMain = bombParticle.main;
-        particleMain.startLifetime = bombFuse;
-        particleMain.stopAction = ParticleSystemStopAction.Callback;
-        bombParticle.Emit(1);
-        bombParticle.Stop();
-        var particleEmission = bombParticle.emission;
-        particleEmission.enabled = false;
-        SnapToCell(); 
-        team = _team;
-        UpdateColor();
+        if (IsServer)
+        {
+            team.Value = _team;
+            transform.position = position;
+            var particleMain = bombParticle.main;
+            particleMain.startLifetime = bombFuse;
+            particleMain.stopAction = ParticleSystemStopAction.Callback;
+            bombParticle.Emit(1);
+            bombParticle.Stop();
+            var particleEmission = bombParticle.emission;
+            particleEmission.enabled = false;
+            SnapToCell();
+        }
     }
 
     private void SnapToCell()
@@ -70,12 +60,14 @@ public class BombController : MonoBehaviour
 
     public void BombKicked(TeamColor _team, Vector2 kickOrigin)
     {
-        if (team != _team)
+        if (IsServer)
         {
-            team = _team;
-            UpdateColor();
+            if (team.Value != _team)
+            {
+                team.Value = _team;
+            }
+            StartCoroutine(BombMoving(CalculateDirection(kickOrigin, transform.position)));
         }
-        StartCoroutine(BombMoving(CalculateDirection(kickOrigin, transform.position)));
     }
 
     private Vector2 CalculateDirection(Vector2 origin, Vector2 self)
@@ -86,7 +78,7 @@ public class BombController : MonoBehaviour
     private void UpdateColor()
     {
         Debug.Log("Setting color");
-        switch (team)
+        switch (team.Value)
         {
             case TeamColor.RED:
                 bombParticleRenderer.material = red;
@@ -126,14 +118,20 @@ public class BombController : MonoBehaviour
 
     private void OnParticleSystemStopped()
     {
-        SnapToCell();
-        Explode();
+        if (IsServer)
+        {
+            SnapToCell();
+            Explode();
+        }
     }
 
     private void Explode()
     {
-        GameObject GO = Instantiate(explosion);
-        GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team);
-        Destroy(gameObject);
+        if (IsServer)
+        {
+            GameObject GO = Instantiate(explosion);
+            GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
+            Destroy(gameObject);
+        }
     }
 }

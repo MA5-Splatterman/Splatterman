@@ -1,4 +1,4 @@
 repository "SPO2160 MA5 Splatterman@Splatterman@cloud"
   path "/"
-    br "/main"
-    co "/main"
+    smartbranch "/main" changeset "15" 
+     
