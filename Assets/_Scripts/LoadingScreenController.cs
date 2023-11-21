@@ -5,17 +5,16 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SimpleController : MonoBehaviour
+public class LoadingScreenController : MonoBehaviour
 {
-    [SerializeField]
-    TMP_InputField code;
-    [SerializeField]
-    RelayManager relayManager;
+    [SerializeField] TMP_InputField code;
+    [SerializeField] RelayManager relayManager;
+	[SerializeField] string mapName = "BombTest";
 
     public async void StartHost()
     {
         await relayManager.CreateRelay(true);
-        SceneManager.LoadSceneAsync("Playing");
+        SceneManager.LoadSceneAsync( mapName );
         SceneManager.sceneLoaded += SceneManager_sceneLoaded_Host;
     }
 
@@ -34,7 +33,7 @@ public class SimpleController : MonoBehaviour
     public async void StartServer()
     {
         await relayManager.CreateRelay(false);
-        SceneManager.LoadScene("Playing");
+        SceneManager.LoadScene( mapName );
         SceneManager.sceneLoaded += SceneManager_sceneLoaded_Server;
     }
 

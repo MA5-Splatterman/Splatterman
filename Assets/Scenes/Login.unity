@@ -764,7 +764,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1963451826}
-    PlayerPrefab: {fileID: 8614946557698689208, guid: fdaeedac6e30c3a43a64d50d141672be, type: 3}
+    PlayerPrefab: {fileID: 7776204946100807362, guid: 5dfd12426ff59434ca4d5fcd9baae7c6, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 4681d303504a94c4c981ad3d6b1b8009, type: 2}
@@ -827,6 +827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   code: {fileID: 1017705678}
   relayManager: {fileID: 1963451829}
+  mapName: BombTest
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
