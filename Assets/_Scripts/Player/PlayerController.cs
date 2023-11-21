@@ -30,10 +30,6 @@ public class PlayerController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         input = new PlayerControls();
-        Debug.Log(IsClient );
-        Debug.Log(IsLocalPlayer );
-        Debug.Log(IsOwner);
-        Debug.Log(IsOwnedByServer);
         if (IsOwner && IsClient)
         {
             Debug.Log("Controls Enabled");
