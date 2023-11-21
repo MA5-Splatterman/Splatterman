@@ -183,9 +183,9 @@ GameObject:
   - component: {fileID: 7327042063902557102}
   - component: {fileID: 695452337464003961}
   - component: {fileID: 5688889204108494932}
-  - component: {fileID: -6958543798974135096}
-  - component: {fileID: 558312559369144125}
   - component: {fileID: 5993888649446562238}
+  - component: {fileID: 5056703739819663541}
+  - component: {fileID: 6957861544286316721}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 522048105
+  GlobalObjectIdHash: 163194389
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -253,6 +253,12 @@ MonoBehaviour:
   red: {fileID: 2100000, guid: d20e4c77c4a71b54296a071cb768de1b, type: 2}
   blue: {fileID: 2100000, guid: 186683100aaaf80408ada346c8d7abb7, type: 2}
   suit: {fileID: 4623214639036941048}
+  _isOwner: 0
+  _isClient: 0
+  _isLocalPlayer: 0
+  _isHost: 0
+  movementVector: {x: 0, y: 0}
+  actualVelocity: {x: 0, y: 0}
 --- !u!50 &1781192248922443834
 Rigidbody2D:
   serializedVersion: 4
@@ -371,7 +377,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &-6958543798974135096
+--- !u!114 &5993888649446562238
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -380,7 +386,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7776204946100807362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 5688889204108494932}
+--- !u!114 &5056703739819663541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7776204946100807362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a65f3ac378d2cf44388abce3e93274b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SyncPositionX: 1
@@ -401,7 +421,7 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &558312559369144125
+--- !u!114 &6957861544286316721
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -413,17 +433,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5993888649446562238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7776204946100807362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 5688889204108494932}

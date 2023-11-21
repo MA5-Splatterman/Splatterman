@@ -9,6 +9,11 @@ public class AutoClientStart : MonoBehaviour
 
     private void Start()
     {
+#if !UNITY_EDITOR
         manager.StartClient();
+#endif
+#if UNITY_EDITOR
+        manager.StartHost();
+#endif
     }
 }

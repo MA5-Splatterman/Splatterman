@@ -26,6 +26,8 @@ public class PlayerController : NetworkBehaviour
     // Other variables
     private PlayerControls input;
     private Vector2 movementVector = Vector2.zero;
+    public Vector2 actualVelocity;
+    //private Vector2 movementVector = Vector2.zero;
 
     public override void OnNetworkSpawn()
     {
@@ -74,7 +76,7 @@ public class PlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((IsOwner & IsClient))
+        if (IsOwner && IsClient)
         {
             MovePlayer(movementVector);
         }
@@ -83,8 +85,17 @@ public class PlayerController : NetworkBehaviour
     private void OnMovementPerformed(InputAction.CallbackContext context)
     {
         movementVector = context.ReadValue<Vector2>();
-        anim.SetFloat("vertical", movementVector.y);
-        anim.SetFloat("horizontal", movementVector.x);
+        DisplayMoveAnimationServerRpc();
+    }
+
+    [ServerRpc]
+    private void DisplayMoveAnimationServerRpc()
+    {
+        if (IsOwner)
+        {
+            anim.SetFloat("vertical", movementVector.y);
+            anim.SetFloat("horizontal", movementVector.x);
+        }
     }
 
     private void OnMovementCancelled(InputAction.CallbackContext context)
@@ -94,7 +105,9 @@ public class PlayerController : NetworkBehaviour
 
     private void MovePlayer(Vector2 direction)
     {
+        Debug.Log("Setting Velocity to: " + direction * moveSpeed);
         rb2d.velocity = direction * moveSpeed;
+        Debug.Log("Current Velocity is: " + rb2d.velocity);
     }
 
     private void OnDropBombPerformed(InputAction.CallbackContext context)
