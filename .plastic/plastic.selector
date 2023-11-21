@@ -1,4 +1,0 @@
-repository "SPO2160 MA5 Splatterman@Splatterman@cloud"
-  path "/"
-    smartbranch "/main" changeset "16"    
-     

@@ -86,7 +86,6 @@ public class PlayerController : NetworkBehaviour
 
     private void OnMovementPerformed(InputAction.CallbackContext context)
     {
-        Debug.Log("Hey Im working");
         movementVector = context.ReadValue<Vector2>();
         anim.SetFloat("vertical", movementVector.y);
         anim.SetFloat("horizontal", movementVector.x);
