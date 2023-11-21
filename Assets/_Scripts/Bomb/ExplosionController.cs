@@ -130,9 +130,9 @@ public class ExplosionController : NetworkBehaviour
             renderer.sprite = (i == explosionLength - 1) ? end : line;
             renderer.material = spriteRenderer.material;
             _explosion.transform.position = transform.position + new Vector3(direction.x * (i + 1), direction.y * (i + 1), 0);
-            Destroy(_explosion, 1f);
+            Destroy(_explosion, 2f);
         }
-        Destroy(gameObject, 1f);
+        Destroy(gameObject, 2f);
     }
 
     private int CalculateExplosionLength(RaycastHit2D hit, Vector2 direction)
