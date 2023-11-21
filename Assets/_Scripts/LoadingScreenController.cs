@@ -1,3 +1,4 @@
+using Eflatun.SceneReference;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,12 +10,12 @@ public class LoadingScreenController : MonoBehaviour
 {
     [SerializeField] TMP_InputField code;
     [SerializeField] RelayManager relayManager;
-	[SerializeField] string mapName = "BombTest";
+	[SerializeField] SceneReference mapRef;
 
-    public async void StartHost()
+	public async void StartHost()
     {
         await relayManager.CreateRelay(true);
-        SceneManager.LoadSceneAsync( mapName );
+        SceneManager.LoadSceneAsync( mapRef.Name );
         SceneManager.sceneLoaded += SceneManager_sceneLoaded_Host;
     }
 
@@ -35,7 +36,7 @@ public class LoadingScreenController : MonoBehaviour
     public async void StartServer()
     {
         await relayManager.CreateRelay(false);
-        SceneManager.LoadScene( mapName );
+        SceneManager.LoadSceneAsync( mapRef.Name );
         SceneManager.sceneLoaded += SceneManager_sceneLoaded_Server;
     }
 
