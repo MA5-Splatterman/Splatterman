@@ -30,10 +30,11 @@ public class LoadingScreenController : MonoBehaviour
         SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Host;
     }
 
-    public async void StartClient()
-    {
-        await relayManager.JoinRelay(code.text);
-        NetworkManager.Singleton.StartClient();
+	public async void StartClient () {
+		if ( code.text != string.Empty ) { 
+			await relayManager.JoinRelay( code.text );
+			NetworkManager.Singleton.StartClient();
+		}
     }
 
     public async void StartServer()
