@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 163194389
+  GlobalObjectIdHash: 522048105
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -253,11 +253,6 @@ MonoBehaviour:
   red: {fileID: 2100000, guid: d20e4c77c4a71b54296a071cb768de1b, type: 2}
   blue: {fileID: 2100000, guid: 186683100aaaf80408ada346c8d7abb7, type: 2}
   suit: {fileID: 4623214639036941048}
-  _isOwner: 0
-  _isClient: 0
-  _isLocalPlayer: 0
-  _isHost: 0
-  movementVector: {x: 0, y: 0}
   actualVelocity: {x: 0, y: 0}
 --- !u!50 &1781192248922443834
 Rigidbody2D:

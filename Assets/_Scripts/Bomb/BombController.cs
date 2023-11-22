@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Loading;
 
 public enum TeamColor
 {
+    NONE,
     RED,
     BLUE
 }
 
-public class BombController : NetworkBehaviour
+public class BombController : NetworkBehaviour, IExplodable
 {
     [SerializeField] Grid grid;
 
@@ -21,6 +23,7 @@ public class BombController : NetworkBehaviour
 
     [SerializeField] private ParticleSystem bombParticle;
     [SerializeField] private ParticleSystemRenderer bombParticleRenderer;
+    [SerializeField] private CircleCollider2D collider2D;
 
     [SerializeField] private int bombMovementSpeed = 10;
     [SerializeField] private int bombExplosionRange = 2;
@@ -31,6 +34,7 @@ public class BombController : NetworkBehaviour
         if (IsServer)
         {
             team.Value = _team;
+            UpdateColorServerRpc();
             transform.position = position;
             var particleMain = bombParticle.main;
             particleMain.startLifetime = bombFuse;
@@ -65,6 +69,7 @@ public class BombController : NetworkBehaviour
             if (team.Value != _team)
             {
                 team.Value = _team;
+                UpdateColorServerRpc();
             }
             StartCoroutine(BombMoving(CalculateDirection(kickOrigin, transform.position)));
         }
@@ -75,7 +80,8 @@ public class BombController : NetworkBehaviour
         return self - origin;
     }
 
-    private void UpdateColor()
+    [ServerRpc]
+    private void UpdateColorServerRpc()
     {
         Debug.Log("Setting color");
         switch (team.Value)
@@ -129,10 +135,19 @@ public class BombController : NetworkBehaviour
     {
         if (IsServer)
         {
+            collider2D.enabled = false;
 			GameObject GO = Instantiate(explosion);
 			GO.GetComponent<NetworkObject>().Spawn(  );
 			GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
             Destroy(gameObject);
         }
+    }
+
+    public void ExplosionHit(TeamColor color)
+    {
+        StopAllCoroutines();
+        team.Value = color;
+        SnapToCell();
+        Explode();
     }
 }

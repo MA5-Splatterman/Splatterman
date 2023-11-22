@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : NetworkBehaviour, IExplodable
 {
     [Header("Stats")]
     [SerializeField] private int moveSpeed;
@@ -40,6 +40,7 @@ public class PlayerController : NetworkBehaviour
             input.Player.Movement.canceled += OnMovementCancelled;
             input.Player.DropBomb.performed += OnDropBombPerformed;
         }
+        AssignTeam(TeamColor.BLUE);
     }
 
     private void OnDisable()
@@ -64,11 +65,11 @@ public class PlayerController : NetworkBehaviour
         switch (team.Value)
         {
             case TeamColor.RED:
-                suit.color = Color.red;
+                suit.material = red;
                 break;
 
             case TeamColor.BLUE:
-                suit.color = Color.blue;
+                suit.material= blue;
                 break;
         }
     }
@@ -105,9 +106,7 @@ public class PlayerController : NetworkBehaviour
 
     private void MovePlayer(Vector2 direction)
     {
-        Debug.Log("Setting Velocity to: " + direction * moveSpeed);
         rb2d.velocity = direction * moveSpeed;
-        Debug.Log("Current Velocity is: " + rb2d.velocity);
     }
 
     private void OnDropBombPerformed(InputAction.CallbackContext context)
@@ -126,5 +125,10 @@ public class PlayerController : NetworkBehaviour
         BombController bombController = bomb.GetComponent<BombController>();
         bombController.BombPlaced(team.Value, position);
         
+    }
+
+    public void ExplosionHit(TeamColor color)
+    {
+        Debug.Log("Ouch! Player was hit!");
     }
 }

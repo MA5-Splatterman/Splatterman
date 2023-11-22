@@ -19,9 +19,12 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
     IEnumerator OnBreak()
     {
         particles.SetActive(true);
+        particles.transform.parent = null;
+        Destroy(particles, brickParticle.main.duration > smokeParticle.main.duration ? brickParticle.main.duration : smokeParticle.main.duration);
         yield return new WaitForSeconds(0.1f);
         spriteRenderer.enabled = false;
         DropPowerup();
+        Destroy(gameObject, 0.6f);
         yield return new WaitForSeconds(0.5f);
         var smokeEmission = smokeParticle.emission;
         var brickEmission = brickParticle.emission;
@@ -34,7 +37,7 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
 
     }
 
-    public void ExplosionHit()
+    public void ExplosionHit(TeamColor color)
     {
         HasBeenHit();
     }

@@ -1,18 +1,19 @@
 using System.Collections;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ExplosionController : NetworkBehaviour
 {
-    private NetworkVariable<int> explosionRange = new NetworkVariable<int>();
+    private NetworkVariable<int> explosionRange = new NetworkVariable<int>(2);
 
-    private NetworkVariable<bool> upBlocked = new NetworkVariable<bool>();
-    private NetworkVariable<bool> downBlocked = new NetworkVariable<bool>();
-    private NetworkVariable<bool> leftBlocked = new NetworkVariable<bool>();
-    private NetworkVariable<bool> rightBlocked = new NetworkVariable<bool>();
+    private NetworkVariable<bool> upBlocked = new NetworkVariable<bool>(false);
+    private NetworkVariable<bool> downBlocked = new NetworkVariable<bool>(false);
+    private NetworkVariable<bool> leftBlocked = new NetworkVariable<bool>(false);
+    private NetworkVariable<bool> rightBlocked = new NetworkVariable<bool>(false);
 
     [SerializeField] private GameObject explosion;
-    private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
+    private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>(TeamColor.NONE);
 
     [SerializeField] private LayerMask layermask;
     [SerializeField] private LayerMask layermaskWithBreakable;
@@ -27,8 +28,8 @@ public class ExplosionController : NetworkBehaviour
         if (IsServer)
         {
             transform.position = positionToSpawn;
-            explosionRange.Value = _explosionRange;
-            team.Value = _team;
+            explosionRange = new NetworkVariable<int>(_explosionRange);
+            team = new NetworkVariable<TeamColor>(_team);
             DetermineGameStateChangesServerRpc();
         }
     }
@@ -53,7 +54,7 @@ public class ExplosionController : NetworkBehaviour
 
     private bool IsDirectionBlocked(Vector2 direction)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, explosionRange.Value, layermask);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, 1, layermask);
         return hit.collider != null;
     }
 
@@ -97,25 +98,49 @@ public class ExplosionController : NetworkBehaviour
 
     private void CreateExplosionLine(Sprite line, Sprite end, Vector2 direction)
     {
-        ProcessExplosionImpactServerRpc(direction);
         CreateExplosionVisuals(direction, line, end);
+        ProcessExplosionImpactServerRpc(direction);
     }
 
     [ServerRpc]
     private void ProcessExplosionImpactServerRpc(Vector2 direction)
     {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, explosionRange.Value);
+        foreach(RaycastHit2D hit in hits)
+        {
+            if (hit.collider != null)
+            {
+                if (hit.transform.CompareTag("Wall")) break;
+                if (hit.transform.CompareTag("Breakable"))
+                {
+                    hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
+                    break;
+                }
+                if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Bomb") || hit.transform.CompareTag("Paintable"))
+                {
+                    Debug.Log("Explosion hit: " + hit.transform.tag);
+                    hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
+                }
+            }
+        }
+        /*
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, explosionRange.Value, layermaskWithBreakable);
         if (hit)
         {
             if (hit.transform.CompareTag("Breakable"))
             {
-                hit.transform.GetComponent<IExplodable>().ExplosionHit();
-            }
-            else if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Bomb"))
-            {
-                hit.transform.GetComponent<IExplodable>().ExplosionHit();
+                hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
             }
         }
+        hit = Physics2D.Raycast(transform.position + (Vector3)direction, direction, hit ? hit.distance : explosionRange.Value);
+        if (hit)
+        {
+            if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Bomb") || hit.transform.CompareTag("Paintable Tile"))
+            {
+                Debug.Log("Explosion hit: " + hit.transform.tag);
+                hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
+            }
+        }*/
     }
 
     private void CreateExplosionVisuals(Vector2 direction, Sprite line, Sprite end)

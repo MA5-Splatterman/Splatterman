@@ -1,4 +1,4 @@
 public interface IExplodable
 {
-    void ExplosionHit();
+    void ExplosionHit(TeamColor color);
 }
