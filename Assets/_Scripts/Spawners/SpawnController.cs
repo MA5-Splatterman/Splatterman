@@ -8,6 +8,8 @@ public class SpawnController : MonoBehaviour
 	private int _spawnIndex = 0;
 	private bool _nextSpawnIsRed = true;
 	private TeamColor _teamColor;
+	private int _redPlayers;
+	private int _bluePlayers;
 
 	private void Awake () {
 		foreach (Transform t in transform) {  
@@ -30,11 +32,11 @@ public class SpawnController : MonoBehaviour
 		if ( _nextSpawnIsRed ) {
 			_teamColor = TeamColor.RED;
 			_nextSpawnIsRed = !_nextSpawnIsRed;
-
+			_redPlayers++;
 		} else { 
 			_teamColor = TeamColor.BLUE;
 			_nextSpawnIsRed = !_nextSpawnIsRed;
-
+			_bluePlayers++;
 		}
 
 		GameObject _gameObject = Instantiate( _playerPrefab, _spawnLocation, Quaternion.identity );
