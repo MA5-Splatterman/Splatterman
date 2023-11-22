@@ -17,6 +17,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
     private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
 
     [Header("Project Variables")]
+    [SerializeField] private GameObject playerCamera;
     [SerializeField] private Animator anim;
     [SerializeField] private Rigidbody2D rb2d;
     [SerializeField] private GameObject bombPrefab;
@@ -32,8 +33,9 @@ public class PlayerController : NetworkBehaviour, IExplodable
     public override void OnNetworkSpawn()
     {
         input = new PlayerControls();
-        if (IsOwner && IsClient)
+        if (IsOwner && (IsClient || IsHost))
         {
+            playerCamera.SetActive(true);
             Debug.Log("Controls Enabled");
             input.Enable();
             input.Player.Movement.performed += OnMovementPerformed;

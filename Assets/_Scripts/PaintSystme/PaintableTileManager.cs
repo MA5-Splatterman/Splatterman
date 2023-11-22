@@ -10,6 +10,7 @@ public class PaintableTileManager : NetworkBehaviour
     [SerializeField] private NetworkVariable<int> numberOfRedTiles; 
     [SerializeField] private NetworkVariable<int> numberOfBlueTiles; 
 
+    
 
     public TeamColor CheckWinningTeam()
     {
