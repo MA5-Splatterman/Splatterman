@@ -10,8 +10,8 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
     [SerializeField] private GameObject particles;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
-
-    public void HasBeenHit()
+    [ClientRpc]
+    public void HasBeenHitClientRpc()
     {
         StartCoroutine(OnBreak());
     }
@@ -39,6 +39,6 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
 
     public void ExplosionHit(TeamColor color)
     {
-        HasBeenHit();
+        HasBeenHitClientRpc();
     }
 }
