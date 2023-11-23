@@ -7,13 +7,13 @@ public class AutoClientStart : MonoBehaviour
 {
     [SerializeField] private NetworkManager manager;
 
-    private void Start()
+    public void HostGame()
     {
-#if !UNITY_EDITOR
-        manager.StartClient();
-#endif
-#if UNITY_EDITOR
         manager.StartHost();
-#endif
+    }
+
+    public void JoinGame()
+    {
+        manager.StartClient();
     }
 }

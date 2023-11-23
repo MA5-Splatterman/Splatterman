@@ -29,13 +29,18 @@ public class BombController : NetworkBehaviour, IExplodable
     [SerializeField] private int bombExplosionRange = 2;
     [SerializeField] private float bombFuse = 5;
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        team.OnValueChanged += HandleTeamColorChanged;
+    }
+
     public void BombPlaced(TeamColor _team, Vector2 position)
     {
         if (IsServer)
         {
             team.Value = _team;
-            UpdateColorServerRpc();
-            transform.position = position;
+            transform.position = new Vector2(position.x, position.y - 0.3f);
             var particleMain = bombParticle.main;
             particleMain.startLifetime = bombFuse;
             particleMain.stopAction = ParticleSystemStopAction.Callback;
@@ -69,7 +74,7 @@ public class BombController : NetworkBehaviour, IExplodable
             if (team.Value != _team)
             {
                 team.Value = _team;
-                UpdateColorServerRpc();
+                UpdateColor();
             }
             StartCoroutine(BombMoving(CalculateDirection(kickOrigin, transform.position)));
         }
@@ -80,8 +85,12 @@ public class BombController : NetworkBehaviour, IExplodable
         return self - origin;
     }
 
-    [ServerRpc]
-    private void UpdateColorServerRpc()
+    private void HandleTeamColorChanged(TeamColor oldValue, TeamColor newValue)
+    {
+        UpdateColor();
+    }
+
+    private void UpdateColor()
     {
         Debug.Log("Setting color");
         switch (team.Value)
@@ -139,15 +148,18 @@ public class BombController : NetworkBehaviour, IExplodable
 			GameObject GO = Instantiate(explosion);
 			GO.GetComponent<NetworkObject>().Spawn(  );
 			GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
-            Destroy(gameObject);
+            GetComponent<NetworkObject>().Despawn();
         }
     }
 
     public void ExplosionHit(TeamColor color)
     {
-        StopAllCoroutines();
-        team.Value = color;
-        SnapToCell();
-        Explode();
+        if (IsServer)
+        {
+            StopAllCoroutines();
+            team.Value = color;
+            SnapToCell();
+            Explode();
+        }
     }
 }

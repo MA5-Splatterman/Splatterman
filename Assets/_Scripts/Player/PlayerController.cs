@@ -27,32 +27,40 @@ public class PlayerController : NetworkBehaviour, IExplodable
     // Other variables
     private PlayerControls input;
     private Vector2 movementVector = Vector2.zero;
-    public Vector2 actualVelocity;
+    private NetworkVariable<float> vertical = new NetworkVariable<float>();
+    private NetworkVariable<float> horizontal = new NetworkVariable<float>();
     //private Vector2 movementVector = Vector2.zero;
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
         input = new PlayerControls();
         if (IsOwner && (IsClient || IsHost))
         {
             playerCamera.SetActive(true);
+            playerCamera.GetComponent<Camera>().depth = 1;
             Debug.Log("Controls Enabled");
             input.Enable();
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCancelled;
             input.Player.DropBomb.performed += OnDropBombPerformed;
+            vertical.OnValueChanged += HandleVerticalChanged;
+            horizontal.OnValueChanged += HandleHorizontalChanged;
+
         }
         AssignTeam(TeamColor.BLUE);
     }
 
     private void OnDisable()
     {
-        if (IsOwner && IsClient)
+        if (IsOwner && (IsClient || IsHost))
         {
             input.Disable();
             input.Player.Movement.performed -= OnMovementPerformed;
             input.Player.Movement.canceled -= OnMovementCancelled;
             input.Player.DropBomb.performed -= OnDropBombPerformed;
+            vertical.OnValueChanged -= HandleVerticalChanged;
+            horizontal.OnValueChanged -= HandleHorizontalChanged;
         }
     }
 
@@ -88,17 +96,29 @@ public class PlayerController : NetworkBehaviour, IExplodable
     private void OnMovementPerformed(InputAction.CallbackContext context)
     {
         movementVector = context.ReadValue<Vector2>();
-        DisplayMoveAnimationServerRpc();
+        if (IsOwner)
+        {
+            DisplayMoveAnimationServerRpc();
+        }
     }
 
     [ServerRpc]
     private void DisplayMoveAnimationServerRpc()
     {
-        if (IsOwner)
-        {
-            anim.SetFloat("vertical", movementVector.y);
-            anim.SetFloat("horizontal", movementVector.x);
-        }
+        vertical.Value = movementVector.y;
+        horizontal.Value = movementVector.x;
+        anim.SetFloat("vertical", vertical.Value);
+        anim.SetFloat("horizontal", horizontal.Value);
+    }
+
+    private void HandleVerticalChanged(float oldValue, float newValue)
+    {
+        DisplayMoveAnimationServerRpc();
+    }
+
+    private void HandleHorizontalChanged(float oldValue, float newValue)
+    {
+        DisplayMoveAnimationServerRpc();
     }
 
     private void OnMovementCancelled(InputAction.CallbackContext context)

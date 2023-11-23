@@ -14,6 +14,7 @@ public class ExplosionController : NetworkBehaviour
 
     [SerializeField] private GameObject explosion;
     private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>(TeamColor.NONE);
+    private NetworkVariable<Vector2> originPosition = new NetworkVariable<Vector2>(Vector2.zero);
 
     [SerializeField] private LayerMask layermask;
     [SerializeField] private LayerMask layermaskWithBreakable;
@@ -23,13 +24,20 @@ public class ExplosionController : NetworkBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Sprite fourWay, verticalWay, horizontalWay, upEnd, downEnd, leftEnd, rightEnd;
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        team.OnValueChanged += HandleTeamChanged;
+        originPosition.OnValueChanged += HandleOriginPositionChanged;
+    }
+
     public void SpawnExplosion(Vector2 positionToSpawn, int _explosionRange, TeamColor _team)
     {
+        originPosition.Value = positionToSpawn;
         if (IsServer)
         {
-            transform.position = positionToSpawn;
-            explosionRange = new NetworkVariable<int>(_explosionRange);
-            team = new NetworkVariable<TeamColor>(_team);
+            explosionRange.Value = _explosionRange;
+            team.Value = _team;
             DetermineGameStateChangesServerRpc();
         }
     }
@@ -37,18 +45,31 @@ public class ExplosionController : NetworkBehaviour
     [ServerRpc]
     private void DetermineGameStateChangesServerRpc()
     {
+        Debug.Log("Determining Game State Changes");
         upBlocked.Value = IsDirectionBlocked(Vector2.up);
         downBlocked.Value = IsDirectionBlocked(Vector2.down);
         leftBlocked.Value = IsDirectionBlocked(Vector2.left);
         rightBlocked.Value = IsDirectionBlocked(Vector2.right);
 
+        CreateExplosionEffects();
+
         UpdateExplosionVisualsClientRpc();
+    }
+    
+    private void HandleOriginPositionChanged(Vector2 oldValue, Vector2 newValue)
+    {
+        transform.position = originPosition.Value;
+    }
+
+    private void HandleTeamChanged(TeamColor oldValue, TeamColor newValue)
+    {
+        ChangeColor();
     }
 
     [ClientRpc]
     private void UpdateExplosionVisualsClientRpc()
     {
-        ChangeColor();
+        Debug.Log("Updating Visuals for Client");
         CreateExplosionEffects();
     }
 
@@ -98,8 +119,15 @@ public class ExplosionController : NetworkBehaviour
 
     private void CreateExplosionLine(Sprite line, Sprite end, Vector2 direction)
     {
-        CreateExplosionVisuals(direction, line, end);
-        ProcessExplosionImpactServerRpc(direction);
+        Debug.Log("Creating Line");
+        if (!IsServer || IsHost)
+        {
+            CreateExplosionVisuals(direction, line, end);
+        }
+        if (IsServer)
+        {
+            ProcessExplosionImpactServerRpc(direction);
+        }
     }
 
     [ServerRpc]
@@ -123,24 +151,6 @@ public class ExplosionController : NetworkBehaviour
                 }
             }
         }
-        /*
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, explosionRange.Value, layermaskWithBreakable);
-        if (hit)
-        {
-            if (hit.transform.CompareTag("Breakable"))
-            {
-                hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
-            }
-        }
-        hit = Physics2D.Raycast(transform.position + (Vector3)direction, direction, hit ? hit.distance : explosionRange.Value);
-        if (hit)
-        {
-            if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Bomb") || hit.transform.CompareTag("Paintable Tile"))
-            {
-                Debug.Log("Explosion hit: " + hit.transform.tag);
-                hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
-            }
-        }*/
     }
 
     private void CreateExplosionVisuals(Vector2 direction, Sprite line, Sprite end)
@@ -151,9 +161,10 @@ public class ExplosionController : NetworkBehaviour
         for (int i = 0; i < explosionLength; i++)
         {
             GameObject _explosion = Instantiate(explosion);
-			if(_explosion.TryGetComponent<NetworkObject>(out NetworkObject netObj )){ 
-				netObj.Spawn();
-			}
+            if (_explosion.TryGetComponent<NetworkObject>(out NetworkObject netObj))
+            {
+                netObj.Spawn();
+            }
 
             SpriteRenderer renderer = _explosion.GetComponent<SpriteRenderer>();
             renderer.sprite = (i == explosionLength - 1) ? end : line;
