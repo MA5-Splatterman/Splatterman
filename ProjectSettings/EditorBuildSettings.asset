@@ -8,11 +8,14 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 65532f94edc7dfb4f95ddbaf25912947
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/BombTest.unity
     guid: 050453425efcb024680e7dd21bf6f0c3
   - enabled: 0
     path: Assets/Scenes/Arena.unity
     guid: ed155e72188179d4f9ef376e6090964c
+  - enabled: 1
+    path: Assets/Scenes/Grid Arena Test.unity
+    guid: 1479c936c67aa224187b29d0ea035e5e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 3c879c2c18a2c0a41b0d7810de364318, type: 2}

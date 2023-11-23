@@ -7,6 +7,7 @@ public class PaintableTileController : NetworkBehaviour, IExplodable
 {
     [SerializeField] private PaintableTileManager tileManager;
     [SerializeField] private TeamColor color;
+
     public TeamColor Color { get { return color; } }
     [SerializeField] private Material none, red, blue;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -25,6 +26,7 @@ public class PaintableTileController : NetworkBehaviour, IExplodable
         SetColorServerRpc(color);
     }
 
+
     [ServerRpc]
     private void SetColorServerRpc(TeamColor team)
     {
@@ -32,7 +34,6 @@ public class PaintableTileController : NetworkBehaviour, IExplodable
         switch (color)
         {
             case TeamColor.RED:
-                color = team;
                 spriteRenderer.material = red;
                 break;
             
