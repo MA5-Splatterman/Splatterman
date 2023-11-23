@@ -111,6 +111,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
         rb2d.velocity = direction * moveSpeed;
     }
 
+
     private void OnDropBombPerformed(InputAction.CallbackContext context)
     {
         if ((IsOwner & IsClient))
@@ -133,4 +134,11 @@ public class PlayerController : NetworkBehaviour, IExplodable
     {
         Debug.Log("Ouch! Player was hit!");
     }
+
+
+	public void SetSpawnLocation (Vector2 spawnLocation) {
+		//GetComponent<ClientNetworkTransform>().SyncPositionX = true;
+		Debug.Log($"SetSpawnLocationServerRpc: {spawnLocation}");
+		transform.position = spawnLocation;
+	}
 }
