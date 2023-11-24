@@ -25,16 +25,17 @@ public class InterfaceController : MonoBehaviour {
         {
 			manager = FindObjectOfType<GameManager>();
         }
-		manager.curRedPlayers.OnValueChanged += RedPlayerTeamNumberChanged;
-		manager.curBluePlayers.OnValueChanged += BluePlayerTeamNumberChanged;
+		manager.curRedPlayers.OnValueChanged += PlayerTeamNumberChanged;
+		manager.curBluePlayers.OnValueChanged += PlayerTeamNumberChanged;
 		manager.OnGameEnd += OnGameEnd;
 		manager.curTimeInSeconds.OnValueChanged += UpdateRoundTimer;
-    }
+		SetPlayersPerTeam(manager.curRedPlayers.Value, manager.curBluePlayers.Value);
+	}
 
     private void OnDisable()
     {
-		manager.curRedPlayers.OnValueChanged -= RedPlayerTeamNumberChanged;
-		manager.curBluePlayers.OnValueChanged -= BluePlayerTeamNumberChanged;
+		manager.curRedPlayers.OnValueChanged -= PlayerTeamNumberChanged;
+		manager.curBluePlayers.OnValueChanged -= PlayerTeamNumberChanged;
 		manager.OnGameEnd -= OnGameEnd;
 		manager.curTimeInSeconds.OnValueChanged -= UpdateRoundTimer;
 	}
@@ -67,33 +68,10 @@ public class InterfaceController : MonoBehaviour {
 		_interfaceTeamsValue.SetText($"<color=red>{red}</color> | <color=blue>{blue}</color>" );
 	}
 
-	private void RedPlayerTeamNumberChanged(int oldValue, int newValue)
+	private void PlayerTeamNumberChanged(int oldValue, int newValue)
     {
-		UpdateCurPlayerCount(TeamColor.RED, newValue-oldValue);
+		SetPlayersPerTeam(manager.curRedPlayers.Value, manager.curBluePlayers.Value);
     }
-	
-	private void BluePlayerTeamNumberChanged(int oldValue, int newValue)
-    {
-		UpdateCurPlayerCount(TeamColor.BLUE, newValue-oldValue);
-    }
-
-	public void UpdateCurPlayerCount(TeamColor team, int numberToChangeBy)
-    {
-        switch (team)
-        {
-			case TeamColor.RED:
-				redTeamNumber += numberToChangeBy;
-				break;
-
-			case TeamColor.BLUE:
-				blueTeamNumber += numberToChangeBy;
-				break;
-        }
-
-		SetPlayersPerTeam(redTeamNumber, blueTeamNumber);
-
-	}
-
 
 
 	public void UpdateRoundTimer(int oldValue, int newValue)
