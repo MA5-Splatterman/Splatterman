@@ -47,7 +47,7 @@ public class LoadingScreenController : MonoBehaviour
 		SceneManager.sceneLoaded -= SceneManager_sceneLoaded_Server;
 	}
 	/// <summary>
-	/// Sets the join code displayed in the interface on the host/server
+	/// Sets the join code displayed in the interface on the host/server, is usually run after a new scene has been loaded.
 	/// </summary>
 	private void SetInterfaceJoinCode () {
 		var _interfaceController = FindAnyObjectByType<InterfaceController>();
