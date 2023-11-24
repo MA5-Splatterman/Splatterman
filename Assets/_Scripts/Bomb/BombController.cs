@@ -34,7 +34,7 @@ public class BombController : NetworkBehaviour, IExplodable
     {
         base.OnNetworkSpawn();
         team.OnValueChanged += HandleTeamColorChanged;
-         var particleMain = bombParticle.main;
+        var particleMain = bombParticle.main;
 
         particleMain.stopAction = ParticleSystemStopAction.Callback;
 
@@ -84,20 +84,6 @@ public class BombController : NetworkBehaviour, IExplodable
         }
         transform.position = new Vector2(x, y);
     }
-
-    public void BombKicked(TeamColor _team, Vector2 kickOrigin)
-    {
-        if (IsServer)
-        {
-            if (team.Value != _team)
-            {
-                team.Value = _team;
-                UpdateColor();
-            }
-            StartCoroutine(BombMoving(CalculateDirection(kickOrigin, transform.position)));
-        }
-    }
-
     private Vector2 CalculateDirection(Vector2 origin, Vector2 self)
     {
         return self - origin;
@@ -218,6 +204,12 @@ public class BombController : NetworkBehaviour, IExplodable
                     SnapToCell();
                     Explode();
                     return;
+                }
+
+                if (player.team.Value != team.Value)
+                {
+                    team.Value = player.team.Value;
+                    UpdateColor();
                 }
 
                 if (player.canKickBombs.Value)
