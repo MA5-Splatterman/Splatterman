@@ -691,7 +691,7 @@ GameObject:
   - component: {fileID: 5861207057207286621}
   - component: {fileID: 2798357644209446333}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: RoundTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
