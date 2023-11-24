@@ -85,7 +85,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
                 {
                     script.enabled = !newValue;
                 }
-                GameManager.instance.RecalculatePlayerCounts();
+                GameManager.instance.RecalculateGameState();
             };
             AssignTeam(team.Value);
         }
