@@ -34,6 +34,9 @@ public class BombController : NetworkBehaviour, IExplodable
     {
         base.OnNetworkSpawn();
         team.OnValueChanged += HandleTeamColorChanged;
+         var particleMain = bombParticle.main;
+
+        particleMain.stopAction = ParticleSystemStopAction.Callback;
 
     }
 

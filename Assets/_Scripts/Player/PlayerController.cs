@@ -55,6 +55,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
         {
             PlayerCount++;
             team.Value = PlayerCount % 2 == 0 ? TeamColor.BLUE : TeamColor.RED;
+            transform.position = SpawnController.GetSpawnLocation(PlayerCount);
             AssignTeam(team.Value);
         }
         UpdateTeamColor();
