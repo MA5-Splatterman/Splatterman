@@ -60,6 +60,7 @@ public class GameManager : NetworkBehaviour
                 break;
 
             case TeamColor.BLUE:
+
                 break;
         }
     }
