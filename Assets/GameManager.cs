@@ -13,9 +13,9 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private int roundDurationSeconds;
 
     private NetworkVariable<int> startedTime = new NetworkVariable<int>(0);
-    private NetworkVariable<int> curTimeInSeconds = new NetworkVariable<int>(1);
-    private NetworkVariable<int> curRedPlayers = new NetworkVariable<int>(0);
-    private NetworkVariable<int> curBluePlayers = new NetworkVariable<int>(0);
+    public NetworkVariable<int> curTimeInSeconds = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> curRedPlayers = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> curBluePlayers = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     // i dont like this, but speed.
     [SerializeField] PaintableTileManager paintableTileManager;
@@ -52,10 +52,10 @@ public class GameManager : NetworkBehaviour
             instance = null;
         }
     }
-    bool hasStarted = false;
+    NetworkVariable<bool> hasStarted = new NetworkVariable<bool>(false);
     private void StartRound()
     {
-        hasStarted = true;
+        hasStarted.Value = true;
         curTimeInSeconds.Value = roundDurationSeconds;
         startedTime.Value = (int)Time.time;
     }
@@ -91,7 +91,7 @@ public class GameManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            if (!hasStarted) return;
+            if (!hasStarted.Value) return;
             if (curTimeInSeconds.Value > 0)
             {
                 curTimeInSeconds.Value = roundDurationSeconds - ((int)Time.time - startedTime.Value);

@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6da0c21b80efda84188912ce510ee1ca, type: 3}
-  m_Name: SizeBehavior
+  m_Script: {fileID: 11500000, guid: 08662f5089cc83f42b0047274eb501af, type: 3}
+  m_Name: Flashing Behavior
   m_EditorClassIdentifier: 
-  tagID: incr
-  baseAmplitude: 1.2
-  baseFrequency: 4
-  baseWaveSize: 0.2
+  tagID: flash
+  baseFrequency: 1
+  baseColor: {r: 1, g: 0, b: 0, a: 1}
