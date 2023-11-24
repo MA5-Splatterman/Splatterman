@@ -31,10 +31,14 @@ public class PlayerController : NetworkBehaviour, IExplodable
     public NetworkVariable<Vector2> movementVector = new NetworkVariable<Vector2>(default(Vector2), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<float> vertical = new NetworkVariable<float>(default(float), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<float> horizontal = new NetworkVariable<float>(default(float), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    //private Vector2 movementVector = Vector2.zero;
+    
+	//private Vector2 movementVector = Vector2.zero;
     public static int PlayerCount = 0;
     public static HashSet<PlayerController> players = new HashSet<PlayerController>();
-    public override void OnNetworkSpawn()
+	private RelayManager _relayManager;
+	private InterfaceController _interfaceController;
+	
+	public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         input = new PlayerControls();
@@ -85,7 +89,15 @@ public class PlayerController : NetworkBehaviour, IExplodable
             };
             AssignTeam(team.Value);
         }
-        UpdateTeamColor();
+
+		_relayManager = FindFirstObjectByType<RelayManager>();
+		_interfaceController = FindFirstObjectByType<InterfaceController>();
+
+		if ( _relayManager != default && _interfaceController != default && _relayManager.JoinCode != default) {
+			_interfaceController.SetJoinCode( _relayManager.JoinCode );
+		}
+		
+		UpdateTeamColor();
     }
 
     public override void OnNetworkDespawn()

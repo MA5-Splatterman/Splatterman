@@ -734,7 +734,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ProtocolType: 0
+  m_ProtocolType: 1
   m_MaxPacketQueueSize: 128
   m_MaxPayloadSize: 6144
   m_HeartbeatTimeoutMS: 500
@@ -744,7 +744,7 @@ MonoBehaviour:
   ConnectionData:
     Address: 127.0.0.1
     Port: 7777
-    ServerListenAddress: 127.0.0.1
+    ServerListenAddress: 0.0.0.0
   DebugSimulator:
     PacketDelayMS: 0
     PacketJitterMS: 0
@@ -828,8 +828,8 @@ MonoBehaviour:
   code: {fileID: 1017705678}
   relayManager: {fileID: 1963451829}
   mapRef:
-    asset: {fileID: 102900000, guid: 050453425efcb024680e7dd21bf6f0c3, type: 3}
-    guid: 050453425efcb024680e7dd21bf6f0c3
+    asset: {fileID: 102900000, guid: 1479c936c67aa224187b29d0ea035e5e, type: 3}
+    guid: 1479c936c67aa224187b29d0ea035e5e
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
