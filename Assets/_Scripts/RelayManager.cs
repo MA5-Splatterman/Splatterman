@@ -60,7 +60,9 @@ public class RelayManager : MonoBehaviour
         JoinAllocation joinAllocation = await RelayService
             .Instance.JoinAllocationAsync(text);
 
-        var unityTranport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+		_joinCode = text;
+
+		var unityTranport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         
         unityTranport.SetClientRelayData(
             joinAllocation.RelayServer.IpV4,
