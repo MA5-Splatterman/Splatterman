@@ -51,11 +51,9 @@ public class ExplosionController : NetworkBehaviour
         leftBlocked.Value = IsDirectionBlocked(Vector2.left);
         rightBlocked.Value = IsDirectionBlocked(Vector2.right);
 
-        CreateExplosionEffects();
-
         UpdateExplosionVisualsClientRpc();
     }
-    
+
     private void HandleOriginPositionChanged(Vector2 oldValue, Vector2 newValue)
     {
         transform.position = originPosition.Value;
@@ -134,7 +132,7 @@ public class ExplosionController : NetworkBehaviour
     private void ProcessExplosionImpactServerRpc(Vector2 direction)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, explosionRange.Value);
-        foreach(RaycastHit2D hit in hits)
+        foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider != null)
             {

@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 522048105
+  GlobalObjectIdHash: 163194389
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -245,15 +245,24 @@ MonoBehaviour:
   moveSpeed: 4
   bombAmount: 1
   bombRange: 0
-  canKickBombs: 0
+  canKickBombs:
+    m_InternalValue: 1
   bombsPierce: 0
+  team:
+    m_InternalValue: 0
+  playerCamera: {fileID: 0}
   anim: {fileID: 5688889204108494932}
   rb2d: {fileID: 1781192248922443834}
   bombPrefab: {fileID: 3933846088652537763, guid: 6c627ac4d7fc5ef47ae5c17126856b11, type: 3}
   red: {fileID: 2100000, guid: d20e4c77c4a71b54296a071cb768de1b, type: 2}
   blue: {fileID: 2100000, guid: 186683100aaaf80408ada346c8d7abb7, type: 2}
   suit: {fileID: 4623214639036941048}
-  actualVelocity: {x: 0, y: 0}
+  movementVector:
+    m_InternalValue: {x: 0, y: 0}
+  vertical:
+    m_InternalValue: 0
+  horizontal:
+    m_InternalValue: 0
 --- !u!50 &1781192248922443834
 Rigidbody2D:
   serializedVersion: 4

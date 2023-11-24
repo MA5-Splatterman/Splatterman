@@ -11,10 +11,10 @@ public class PlayerController : NetworkBehaviour, IExplodable
     [SerializeField] private int moveSpeed;
     [SerializeField] private int bombAmount;
     [SerializeField] private int bombRange;
-    [SerializeField] private bool canKickBombs;
+    [SerializeField] public NetworkVariable<bool> canKickBombs = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private bool bombsPierce;
 
-    private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
+    public NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
 
     [Header("Project Variables")]
     [SerializeField] private GameObject playerCamera;
@@ -26,16 +26,16 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     // Other variables
     private PlayerControls input;
-    private Vector2 movementVector = Vector2.zero;
-    private NetworkVariable<float> vertical = new NetworkVariable<float>();
-    private NetworkVariable<float> horizontal = new NetworkVariable<float>();
+    public NetworkVariable<Vector2> movementVector = new NetworkVariable<Vector2>(default(Vector2), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<float> vertical = new NetworkVariable<float>(default(float), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<float> horizontal = new NetworkVariable<float>(default(float), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     //private Vector2 movementVector = Vector2.zero;
-
+    public static int PlayerCount = 0;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         input = new PlayerControls();
-        if (IsOwner && (IsClient || IsHost))
+        if (IsOwner)
         {
             playerCamera.SetActive(true);
             playerCamera.GetComponent<Camera>().depth = 1;
@@ -46,14 +46,23 @@ public class PlayerController : NetworkBehaviour, IExplodable
             input.Player.DropBomb.performed += OnDropBombPerformed;
             vertical.OnValueChanged += HandleVerticalChanged;
             horizontal.OnValueChanged += HandleHorizontalChanged;
-
+            team.OnValueChanged += (previousValue, newValue) =>
+            {
+                UpdateTeamColor();
+            };
         }
-        AssignTeam(TeamColor.BLUE);
+        if (IsServer)
+        {
+            PlayerCount++;
+            team.Value = PlayerCount % 2 == 0 ? TeamColor.BLUE : TeamColor.RED;
+            AssignTeam(team.Value);
+        }
+        UpdateTeamColor();
     }
 
     private void OnDisable()
     {
-        if (IsOwner && (IsClient || IsHost))
+        if (IsOwner)
         {
             input.Disable();
             input.Player.Movement.performed -= OnMovementPerformed;
@@ -79,7 +88,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
                 break;
 
             case TeamColor.BLUE:
-                suit.material= blue;
+                suit.material = blue;
                 break;
         }
     }
@@ -89,13 +98,13 @@ public class PlayerController : NetworkBehaviour, IExplodable
     {
         if (IsOwner && IsClient)
         {
-            MovePlayer(movementVector);
+            MovePlayer(movementVector.Value);
         }
     }
 
     private void OnMovementPerformed(InputAction.CallbackContext context)
     {
-        movementVector = context.ReadValue<Vector2>();
+        movementVector.Value = context.ReadValue<Vector2>();
         if (IsOwner)
         {
             DisplayMoveAnimationServerRpc();
@@ -105,8 +114,8 @@ public class PlayerController : NetworkBehaviour, IExplodable
     [ServerRpc]
     private void DisplayMoveAnimationServerRpc()
     {
-        vertical.Value = movementVector.y;
-        horizontal.Value = movementVector.x;
+        vertical.Value = movementVector.Value.y;
+        horizontal.Value = movementVector.Value.x;
         anim.SetFloat("vertical", vertical.Value);
         anim.SetFloat("horizontal", horizontal.Value);
     }
@@ -123,7 +132,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void OnMovementCancelled(InputAction.CallbackContext context)
     {
-        movementVector = Vector2.zero;
+        movementVector.Value = Vector2.zero;
     }
 
     private void MovePlayer(Vector2 direction)
@@ -134,20 +143,21 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void OnDropBombPerformed(InputAction.CallbackContext context)
     {
-        if ((IsOwner & IsClient))
+        if (IsOwner)
         {
-            DropBombServerRpc((Vector2)transform.position);
+            DropBombServerRpc();
         }
     }
 
     [ServerRpc]
-    private void DropBombServerRpc(Vector2 position)
+    private void DropBombServerRpc()
     {
+        Vector3 position = transform.position;
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
         bomb.GetComponent<NetworkObject>().Spawn();
         BombController bombController = bomb.GetComponent<BombController>();
         bombController.BombPlaced(team.Value, position);
-        
+
     }
 
     public void ExplosionHit(TeamColor color)
@@ -156,9 +166,10 @@ public class PlayerController : NetworkBehaviour, IExplodable
     }
 
 
-	public void SetSpawnLocation (Vector2 spawnLocation) {
-		//GetComponent<ClientNetworkTransform>().SyncPositionX = true;
-		Debug.Log($"SetSpawnLocationServerRpc: {spawnLocation}");
-		transform.position = spawnLocation;
-	}
+    public void SetSpawnLocation(Vector2 spawnLocation)
+    {
+        //GetComponent<ClientNetworkTransform>().SyncPositionX = true;
+        Debug.Log($"SetSpawnLocationServerRpc: {spawnLocation}");
+        transform.position = spawnLocation;
+    }
 }

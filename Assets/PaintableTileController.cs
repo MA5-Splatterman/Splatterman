@@ -6,9 +6,7 @@ using UnityEngine;
 public class PaintableTileController : NetworkBehaviour, IExplodable
 {
     [SerializeField] private PaintableTileManager tileManager;
-    [SerializeField] private TeamColor color;
-
-    public TeamColor Color { get { return color; } }
+    [SerializeField] public NetworkVariable<TeamColor> PaintColor = new NetworkVariable<TeamColor>(TeamColor.NONE, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private Material none, red, blue;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
@@ -17,26 +15,28 @@ public class PaintableTileController : NetworkBehaviour, IExplodable
         if (tileManager == null)
         {
             tileManager = FindObjectOfType<PaintableTileManager>();
+            PaintColor.OnValueChanged += (previousValue, newValue) =>
+            {
+                UpdateColor(newValue);
+            };
         }
     }
 
     public void ExplosionHit(TeamColor color)
     {
-        Debug.Log("Hit By Explosion!");
-        SetColorServerRpc(color);
+        PaintColor.Value = color;
     }
-
-
-    [ServerRpc]
-    private void SetColorServerRpc(TeamColor team)
+    public void UpdateColor(TeamColor newcolor)
     {
-        color = team;
-        switch (color)
+        switch (newcolor)
         {
+            case TeamColor.NONE:
+                spriteRenderer.material = none;
+                break;
             case TeamColor.RED:
                 spriteRenderer.material = red;
                 break;
-            
+
             case TeamColor.BLUE:
                 spriteRenderer.material = blue;
                 break;

@@ -16,7 +16,7 @@ public class PaintableTileManager : NetworkBehaviour
     {
         foreach (PaintableTileController tile in paintableTiles)
         {
-            switch (tile.Color)
+            switch (tile.PaintColor.Value)
             {
                 case TeamColor.RED:
                     numberOfRedTiles = new NetworkVariable<int>(numberOfRedTiles.Value++);

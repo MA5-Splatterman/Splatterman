@@ -28,11 +28,13 @@ public class BombController : NetworkBehaviour, IExplodable
     [SerializeField] private int bombMovementSpeed = 10;
     [SerializeField] private int bombExplosionRange = 2;
     [SerializeField] private float bombFuse = 5;
+    bool shouldExplodeOnEnemyPlayerImpact = false;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         team.OnValueChanged += HandleTeamColorChanged;
+
     }
 
     public void BombPlaced(TeamColor _team, Vector2 position)
@@ -51,7 +53,20 @@ public class BombController : NetworkBehaviour, IExplodable
             SnapToCell();
         }
     }
-
+    private Vector2 SnapPosToCell(Vector2 pos)
+    {
+        var x = Mathf.Round(pos.x) + 0.5f;
+        var y = Mathf.Round(pos.y) + 0.5f;
+        if (x - pos.x > 0.5f)
+        {
+            x -= 1;
+        }
+        if (y - pos.y > 0.5f)
+        {
+            y -= 1;
+        }
+        return new Vector2(x, y);
+    }
     private void SnapToCell()
     {
         var x = Mathf.Round(transform.position.x) + 0.5f;
@@ -110,6 +125,17 @@ public class BombController : NetworkBehaviour, IExplodable
                 break;
         }
     }
+    Vector2 SnapDirTo90Deg(Vector2 angle)
+    {
+        if (Mathf.Abs(angle.x) > Mathf.Abs(angle.y))
+        {
+            return new Vector2(angle.x, 0).normalized;
+        }
+        else
+        {
+            return new Vector2(0, angle.y).normalized;
+        }
+    }
 
     IEnumerator BombMoving(Vector2 direction)
     {
@@ -117,15 +143,22 @@ public class BombController : NetworkBehaviour, IExplodable
 
         do
         {
-            RaycastHit2D hit2D = Physics2D.Raycast(direction, transform.position, 1);
+
+            Vector2 Dir = SnapDirTo90Deg(direction);
+            Vector2 Pos = SnapPosToCell(transform.position);
+            RaycastHit2D hit2D = Physics2D.Raycast(Pos, Dir, 1, LayerMask.GetMask("Wall", "Breakable Wall"));
+            Debug.DrawRay(Pos, Dir, Color.red, 1);
+
             if (hit2D)
             {
                 isBlocked = true;
+                Debug.Log("Bomb Blocked by" + hit2D.collider.gameObject.name + " PSO: " + transform.position);
             }
             else
             {
-                transform.position += (Vector3)direction*Time.deltaTime*bombMovementSpeed;
-                yield return new WaitForSeconds(0.01f);
+                Debug.Log("Bomb Moving" + direction + " PSO: " + transform.position);
+                transform.position += (Vector3)Dir * Time.deltaTime * bombMovementSpeed;
+                yield return null;
             }
         } while (isBlocked == false);
         SnapToCell();
@@ -145,9 +178,9 @@ public class BombController : NetworkBehaviour, IExplodable
         if (IsServer)
         {
             collider2D.enabled = false;
-			GameObject GO = Instantiate(explosion);
-			GO.GetComponent<NetworkObject>().Spawn(  );
-			GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
+            GameObject GO = Instantiate(explosion);
+            GO.GetComponent<NetworkObject>().Spawn();
+            GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
             GetComponent<NetworkObject>().Despawn();
         }
     }
@@ -160,6 +193,39 @@ public class BombController : NetworkBehaviour, IExplodable
             team.Value = color;
             SnapToCell();
             Explode();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        AttempKick(other);
+    }
+
+    private void AttempKick(Collider2D other)
+    {
+        if (IsOwnedByServer)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                var player = other.transform.GetComponent<PlayerController>();
+                if (player is null) return;
+
+                if (shouldExplodeOnEnemyPlayerImpact && player.team.Value != team.Value)
+                {
+                    SnapToCell();
+                    Explode();
+                    return;
+                }
+
+                if (player.canKickBombs.Value)
+                {
+                    // prevent pushing bomb if player is not moving
+                    if (Vector2.Distance(player.movementVector.Value, Vector2.zero) > 0.05f)
+                    {
+                        StartCoroutine(BombMoving(player.movementVector.Value));
+                    }
+                }
+            }
         }
     }
 }
