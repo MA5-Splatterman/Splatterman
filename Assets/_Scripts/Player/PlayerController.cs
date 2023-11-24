@@ -24,6 +24,8 @@ public class PlayerController : NetworkBehaviour, IExplodable
     [SerializeField] private Material red, blue;
     [SerializeField] private SpriteRenderer suit;
 
+    [SerializeField] private Behaviour[] scriptsToEnable;
+
     // Other variables
     private PlayerControls input;
     public NetworkVariable<Vector2> movementVector = new NetworkVariable<Vector2>(default(Vector2), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -31,6 +33,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
     public NetworkVariable<float> horizontal = new NetworkVariable<float>(default(float), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     //private Vector2 movementVector = Vector2.zero;
     public static int PlayerCount = 0;
+    public static HashSet<PlayerController> players = new HashSet<PlayerController>();
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -44,19 +47,56 @@ public class PlayerController : NetworkBehaviour, IExplodable
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCancelled;
             input.Player.DropBomb.performed += OnDropBombPerformed;
+            isDead.OnValueChanged += (previousValue, newValue) =>
+            {
+                playerCamera.SetActive(!newValue);
+                if (newValue)
+                {
+                    // if dead
+                    input.Disable();
+                }
+                else
+                {
+                    // if alive
+                    input.Enable();
+                }
+            };
             team.OnValueChanged += (previousValue, newValue) =>
             {
                 UpdateTeamColor();
             };
         }
+
+
+
         if (IsServer)
         {
             PlayerCount++;
+            players.Add(this);
             team.Value = PlayerCount % 2 == 0 ? TeamColor.BLUE : TeamColor.RED;
             transform.position = SpawnController.GetSpawnLocation(PlayerCount);
+            isDead.OnValueChanged += (previousValue, newValue) =>
+            {
+                foreach (var script in scriptsToEnable)
+                {
+                    script.enabled = !newValue;
+                }
+                GameManager.instance.RecalculatePlayerCounts();
+            };
             AssignTeam(team.Value);
         }
         UpdateTeamColor();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsServer)
+        {
+            PlayerCount--;
+            players.Remove(this);
+
+        }
     }
 
     private void OnDisable()
@@ -103,6 +143,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
             anim.SetFloat("horizontal", movementVector.Value.x);
         }
 
+        anim.SetBool("isDead", isDead.Value);
         if (IsOwner && IsClient)
         {
             anim.SetFloat("vertical", movementVector.Value.y);
@@ -143,9 +184,9 @@ public class PlayerController : NetworkBehaviour, IExplodable
         bombController.BombPlaced(team.Value, position);
 
     }
-
+    public NetworkVariable<bool> isDead = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     public void ExplosionHit(TeamColor color)
     {
-        Debug.Log("Ouch! Player was hit!");
+        isDead.Value = true;
     }
 }

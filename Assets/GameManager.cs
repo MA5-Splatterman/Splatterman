@@ -16,18 +16,48 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<int> curTimeInSeconds = new NetworkVariable<int>(0);
     private NetworkVariable<int> curRedPlayers = new NetworkVariable<int>(0);
     private NetworkVariable<int> curBluePlayers = new NetworkVariable<int>(0);
-
-
+    static public GameManager instance;
     public override void OnNetworkSpawn()
-    {   
+    {
+        if (IsServer)
+        {
+            instance = this;
+        }
         base.OnNetworkSpawn();
-        
+        RecalculatePlayerCounts();
+    }
+    public override void OnNetworkDespawn()
+    {
+        if(IsServer)
+        {
+            instance = null;
+        }
     }
 
     private void StartRound()
     {
         curTimeInSeconds.Value = roundDurationSeconds;
         startedTime.Value = (int)Time.time;
+    }
+
+    public void RecalculatePlayerCounts()
+    {
+        int redPlayers = 0;
+        int bluePlayers = 0;
+        foreach (var player in PlayerController.players)
+        {
+            if (player.isDead.Value) continue;
+            if (player.team.Value == TeamColor.RED)
+            {
+                redPlayers++;
+            }
+            else
+            {
+                bluePlayers++;
+            }
+        }
+        curRedPlayers.Value = redPlayers;
+        curBluePlayers.Value = bluePlayers;
     }
 
     private void FixedUpdate()
@@ -51,6 +81,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
     private void EndRoundServerRpc(TeamColor color)
     {
         RaiseOnGameEnd(color);
@@ -64,8 +95,8 @@ public class GameManager : NetworkBehaviour
                 break;
         }
     }
-    
-    
+
+
     public void RaiseOnGameEnd(TeamColor color)
     {
         OnGameEnd?.Invoke(color);
