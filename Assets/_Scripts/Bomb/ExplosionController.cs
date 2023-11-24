@@ -14,7 +14,6 @@ public class ExplosionController : NetworkBehaviour
 
     [SerializeField] private GameObject explosion;
     private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>(TeamColor.NONE);
-    private NetworkVariable<Vector2> originPosition = new NetworkVariable<Vector2>(Vector2.zero);
 
     [SerializeField] private LayerMask layermask;
     [SerializeField] private LayerMask layermaskWithBreakable;
@@ -28,47 +27,26 @@ public class ExplosionController : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         team.OnValueChanged += HandleTeamChanged;
-        originPosition.OnValueChanged += HandleOriginPositionChanged;
     }
 
     public void SpawnExplosion(Vector2 positionToSpawn, int _explosionRange, TeamColor _team)
     {
-        originPosition.Value = positionToSpawn;
-        if (IsServer)
-        {
-            explosionRange.Value = _explosionRange;
-            team.Value = _team;
-            DetermineGameStateChangesServerRpc();
-        }
-    }
+        // Server
+        transform.position = positionToSpawn;
+        explosionRange.Value = _explosionRange;
+        team.Value = _team;
 
-    [ServerRpc]
-    private void DetermineGameStateChangesServerRpc()
-    {
         Debug.Log("Determining Game State Changes");
         upBlocked.Value = IsDirectionBlocked(Vector2.up);
         downBlocked.Value = IsDirectionBlocked(Vector2.down);
         leftBlocked.Value = IsDirectionBlocked(Vector2.left);
         rightBlocked.Value = IsDirectionBlocked(Vector2.right);
-
-        UpdateExplosionVisualsClientRpc();
-    }
-
-    private void HandleOriginPositionChanged(Vector2 oldValue, Vector2 newValue)
-    {
-        transform.position = originPosition.Value;
+        CreateExplosionEffects();
     }
 
     private void HandleTeamChanged(TeamColor oldValue, TeamColor newValue)
     {
         ChangeColor();
-    }
-
-    [ClientRpc]
-    private void UpdateExplosionVisualsClientRpc()
-    {
-        Debug.Log("Updating Visuals for Client");
-        CreateExplosionEffects();
     }
 
     private bool IsDirectionBlocked(Vector2 direction)
@@ -118,18 +96,12 @@ public class ExplosionController : NetworkBehaviour
     private void CreateExplosionLine(Sprite line, Sprite end, Vector2 direction)
     {
         Debug.Log("Creating Line");
-        if (!IsServer || IsHost)
-        {
-            CreateExplosionVisuals(direction, line, end);
-        }
-        if (IsServer)
-        {
-            ProcessExplosionImpactServerRpc(direction);
-        }
+
+        CreateExplosionVisuals(direction, line, end);
+        ProcessExplosionImpact(direction);
     }
 
-    [ServerRpc]
-    private void ProcessExplosionImpactServerRpc(Vector2 direction)
+    private void ProcessExplosionImpact(Vector2 direction)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, explosionRange.Value);
         foreach (RaycastHit2D hit in hits)
@@ -162,11 +134,11 @@ public class ExplosionController : NetworkBehaviour
             if (_explosion.TryGetComponent<NetworkObject>(out NetworkObject netObj))
             {
                 netObj.Spawn();
+                netObj.GetComponent<NetworkSpriteSetter>()
+                    .SetSpriteClientRpc(((i == explosionLength - 1) ? end : line).name, team.Value);
             }
 
-            SpriteRenderer renderer = _explosion.GetComponent<SpriteRenderer>();
-            renderer.sprite = (i == explosionLength - 1) ? end : line;
-            renderer.material = spriteRenderer.material;
+    
             _explosion.transform.position = transform.position + new Vector3(direction.x * (i + 1), direction.y * (i + 1), 0);
             Destroy(_explosion, 2f);
         }

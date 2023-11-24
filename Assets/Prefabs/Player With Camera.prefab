@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3227928563
+  GlobalObjectIdHash: 417955786
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -366,8 +366,11 @@ MonoBehaviour:
   moveSpeed: 4
   bombAmount: 1
   bombRange: 0
-  canKickBombs: 0
+  canKickBombs:
+    m_InternalValue: 1
   bombsPierce: 0
+  team:
+    m_InternalValue: 0
   playerCamera: {fileID: 8517955134445692717}
   anim: {fileID: 5688889204108494932}
   rb2d: {fileID: 1781192248922443834}
@@ -375,6 +378,12 @@ MonoBehaviour:
   red: {fileID: 2100000, guid: d20e4c77c4a71b54296a071cb768de1b, type: 2}
   blue: {fileID: 2100000, guid: 186683100aaaf80408ada346c8d7abb7, type: 2}
   suit: {fileID: 4623214639036941048}
+  movementVector:
+    m_InternalValue: {x: 0, y: 0}
+  vertical:
+    m_InternalValue: 0
+  horizontal:
+    m_InternalValue: 0
 --- !u!50 &1781192248922443834
 Rigidbody2D:
   serializedVersion: 4
@@ -414,7 +423,7 @@ CircleCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 200
+    m_Bits: 712
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -452,7 +461,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 704
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

@@ -44,8 +44,6 @@ public class PlayerController : NetworkBehaviour, IExplodable
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCancelled;
             input.Player.DropBomb.performed += OnDropBombPerformed;
-            vertical.OnValueChanged += HandleVerticalChanged;
-            horizontal.OnValueChanged += HandleHorizontalChanged;
             team.OnValueChanged += (previousValue, newValue) =>
             {
                 UpdateTeamColor();
@@ -69,8 +67,6 @@ public class PlayerController : NetworkBehaviour, IExplodable
             input.Player.Movement.performed -= OnMovementPerformed;
             input.Player.Movement.canceled -= OnMovementCancelled;
             input.Player.DropBomb.performed -= OnDropBombPerformed;
-            vertical.OnValueChanged -= HandleVerticalChanged;
-            horizontal.OnValueChanged -= HandleHorizontalChanged;
         }
     }
 
@@ -101,36 +97,23 @@ public class PlayerController : NetworkBehaviour, IExplodable
         {
             MovePlayer(movementVector.Value);
         }
+        if (IsServer)
+        {
+            anim.SetFloat("vertical", movementVector.Value.y);
+            anim.SetFloat("horizontal", movementVector.Value.x);
+        }
+
+        if (IsOwner && IsClient)
+        {
+            anim.SetFloat("vertical", movementVector.Value.y);
+            anim.SetFloat("horizontal", movementVector.Value.x);
+        }
     }
 
     private void OnMovementPerformed(InputAction.CallbackContext context)
     {
         movementVector.Value = context.ReadValue<Vector2>();
-        if (IsOwner)
-        {
-            DisplayMoveAnimationServerRpc();
-        }
     }
-
-    [ServerRpc]
-    private void DisplayMoveAnimationServerRpc()
-    {
-        vertical.Value = movementVector.Value.y;
-        horizontal.Value = movementVector.Value.x;
-        anim.SetFloat("vertical", vertical.Value);
-        anim.SetFloat("horizontal", horizontal.Value);
-    }
-
-    private void HandleVerticalChanged(float oldValue, float newValue)
-    {
-        DisplayMoveAnimationServerRpc();
-    }
-
-    private void HandleHorizontalChanged(float oldValue, float newValue)
-    {
-        DisplayMoveAnimationServerRpc();
-    }
-
     private void OnMovementCancelled(InputAction.CallbackContext context)
     {
         movementVector.Value = Vector2.zero;
@@ -164,13 +147,5 @@ public class PlayerController : NetworkBehaviour, IExplodable
     public void ExplosionHit(TeamColor color)
     {
         Debug.Log("Ouch! Player was hit!");
-    }
-
-
-    public void SetSpawnLocation(Vector2 spawnLocation)
-    {
-        //GetComponent<ClientNetworkTransform>().SyncPositionX = true;
-        Debug.Log($"SetSpawnLocationServerRpc: {spawnLocation}");
-        transform.position = spawnLocation;
     }
 }

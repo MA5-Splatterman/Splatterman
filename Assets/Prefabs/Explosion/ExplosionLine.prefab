@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5297694201309205928}
   - component: {fileID: 1724001364592609743}
+  - component: {fileID: 4880782404522639302}
   - component: {fileID: 6295564988294984287}
+  - component: {fileID: 8330504225823041777}
   m_Layer: 0
   m_Name: ExplosionLine
   m_TagString: Untagged
@@ -85,6 +87,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4880782404522639302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129197862974459615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2335439641
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &6295564988294984287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,3 +137,25 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 0
   SlerpPosition: 0
+--- !u!114 &8330504225823041777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129197862974459615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 940ca708b07de0b4baf6fd7547f5c3a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: -106464481, guid: 5d2f954407e4db342bd2b3bc5bed92a4, type: 3}
+  - {fileID: -87086939, guid: 5d2f954407e4db342bd2b3bc5bed92a4, type: 3}
+  - {fileID: 1507137517, guid: 5d2f954407e4db342bd2b3bc5bed92a4, type: 3}
+  - {fileID: 221907325, guid: 5d2f954407e4db342bd2b3bc5bed92a4, type: 3}
+  - {fileID: -1747923214, guid: 5d2f954407e4db342bd2b3bc5bed92a4, type: 3}
+  - {fileID: -1842901152, guid: 5d2f954407e4db342bd2b3bc5bed92a4, type: 3}
+  - {fileID: 210116512, guid: 5d2f954407e4db342bd2b3bc5bed92a4, type: 3}
+  redMat: {fileID: 2100000, guid: d20e4c77c4a71b54296a071cb768de1b, type: 2}
+  blueMat: {fileID: 2100000, guid: 186683100aaaf80408ada346c8d7abb7, type: 2}
