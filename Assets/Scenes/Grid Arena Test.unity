@@ -34550,8 +34550,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1946340264}
-  - component: {fileID: 1946340263}
   - component: {fileID: 1946340262}
+  - component: {fileID: 1946340263}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -34591,6 +34591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ed91f064945b664c8ab574a62955415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roundDurationSeconds: 0
 --- !u!4 &1946340264
 Transform:
   m_ObjectHideFlags: 0
@@ -39999,6 +40000,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 768374479158320960, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_text
+      value: 500
+      objectReference: {fileID: 0}
     - target: {fileID: 1161051272659588080, guid: eba1a9b25928972468a53480215117db, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -40148,13 +40153,50 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2355895860867709462, guid: eba1a9b25928972468a53480215117db, type: 3}
       insertIndex: 1
       addedObject: {fileID: 1029255875}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3882601828194904199, guid: eba1a9b25928972468a53480215117db, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3696735905776337072}
   m_SourcePrefab: {fileID: 100100000, guid: eba1a9b25928972468a53480215117db, type: 3}
 --- !u!224 &3696735905776337070 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2355895860867709462, guid: eba1a9b25928972468a53480215117db, type: 3}
   m_PrefabInstance: {fileID: 3696735905776337069}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3696735905776337071 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3882601828194904199, guid: eba1a9b25928972468a53480215117db, type: 3}
+  m_PrefabInstance: {fileID: 3696735905776337069}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3696735905776337072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696735905776337071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8ace8ced0e81c847968cdca0aeda757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typewriterStartsAutomatically: 0
+  animationLoop: 0
+  timeScale: 0
+  _text: <pend><incr>500
+  useDynamicScaling: 1
+  referenceFontSize: 10
+  isResettingTimeOnNewText: 1
+  useDefaultDatabases: 1
+  databaseBehaviors: {fileID: 11400000, guid: f1da62f46e77b884d892fdde8ea555ea, type: 2}
+  databaseAppearances: {fileID: 11400000, guid: 7cf788b0eed28f64fa3084da256b0e32, type: 2}
+  databaseActions: {fileID: 11400000, guid: ce5b6d3657bc6ab40956b2320990119d, type: 2}
+  defaultAppearancesTags:
+  - fade
+  defaultDisappearancesTags:
+  - fade
+  defaultBehaviorsTags: []
+  defaultTagsMode: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
