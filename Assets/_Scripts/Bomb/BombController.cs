@@ -16,14 +16,13 @@ public class BombController : NetworkBehaviour, IExplodable
     [SerializeField] Grid grid;
 
     [SerializeField] private GameObject explosion;
-
     private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
 
     [SerializeField] private Material red, blue;
 
     [SerializeField] private ParticleSystem bombParticle;
     [SerializeField] private ParticleSystemRenderer bombParticleRenderer;
-    [SerializeField] private CircleCollider2D collider2D;
+    [SerializeField] private Collider2D colliderr;
 
     [SerializeField] private int bombMovementSpeed = 10;
     [SerializeField] private int bombExplosionRange = 2;
@@ -35,7 +34,7 @@ public class BombController : NetworkBehaviour, IExplodable
         base.OnNetworkSpawn();
         team.OnValueChanged += HandleTeamColorChanged;
         var particleMain = bombParticle.main;
-
+        spawntime = Time.time;
         particleMain.stopAction = ParticleSystemStopAction.Callback;
 
     }
@@ -135,7 +134,7 @@ public class BombController : NetworkBehaviour, IExplodable
 
             Vector2 Dir = SnapDirTo90Deg(direction);
             Vector2 Pos = SnapPosToCell(transform.position);
-            RaycastHit2D hit2D = Physics2D.Raycast(Pos, Dir, 1, LayerMask.GetMask("Wall", "Breakable Wall"));
+            RaycastHit2D hit2D = Physics2D.Raycast(Pos, Dir, 1, LayerMask.GetMask("Wall", "Breakable Wall", "Bomb", "Player"));
             Debug.DrawRay(Pos, Dir, Color.red, 1);
 
             if (hit2D)
@@ -166,7 +165,7 @@ public class BombController : NetworkBehaviour, IExplodable
     {
         if (IsServer)
         {
-            collider2D.enabled = false;
+            colliderr.enabled = false;
             GameObject GO = Instantiate(explosion);
             GO.GetComponent<NetworkObject>().Spawn();
             GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
@@ -189,9 +188,22 @@ public class BombController : NetworkBehaviour, IExplodable
     {
         AttempKick(other);
     }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (IsOwnedByServer)
+        {
+            if (colliderr)
+                colliderr.isTrigger = false;
+        }
+    }
 
+    float spawntime;
     private void AttempKick(Collider2D other)
     {
+        if (spawntime + 0.2f > Time.time)
+        {
+            return;
+        }
         if (IsOwnedByServer)
         {
             if (other.gameObject.CompareTag("Player"))
