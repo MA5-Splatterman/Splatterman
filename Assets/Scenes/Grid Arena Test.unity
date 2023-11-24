@@ -34018,8 +34018,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ed91f064945b664c8ab574a62955415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roundDurationSeconds: 35
+  roundDurationSeconds: 300
   curTimeInSeconds:
+    m_InternalValue: 0
+  curRedPlayers:
+    m_InternalValue: 0
+  curBluePlayers:
     m_InternalValue: 0
   paintableTileManager: {fileID: 159459331}
 --- !u!4 &1946340264
