@@ -46,7 +46,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
         {
             playerCamera.SetActive(true);
             playerCamera.GetComponent<Camera>().depth = 1;
-            Debug.Log("Controls Enabled");
+            //Debug.Log("Controls Enabled");
             input.Enable();
             input.Player.Movement.performed += OnMovementPerformed;
             input.Player.Movement.canceled += OnMovementCancelled;

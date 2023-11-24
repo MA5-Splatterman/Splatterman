@@ -19,7 +19,7 @@ public class RelayManager : MonoBehaviour
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        Debug.Log(AuthenticationService.Instance.AccessToken);
+        //Debug.Log(AuthenticationService.Instance.AccessToken);
 
     }
 
@@ -29,7 +29,7 @@ public class RelayManager : MonoBehaviour
 
 		_joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
-        Debug.Log( _joinCode );
+        //Debug.Log( _joinCode );
 
         var unityTranport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         if (host)

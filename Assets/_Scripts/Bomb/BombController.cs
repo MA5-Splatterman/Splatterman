@@ -95,17 +95,17 @@ public class BombController : NetworkBehaviour, IExplodable
 
     private void UpdateColor()
     {
-        Debug.Log("Setting color");
+        //Debug.Log("Setting color");
         switch (team.Value)
         {
             case TeamColor.RED:
                 bombParticleRenderer.material = red;
-                Debug.Log("Color is Red");
+                //Debug.Log("Color is Red");
                 break;
 
             case TeamColor.BLUE:
                 bombParticleRenderer.material = blue;
-                Debug.Log("Color is Blue");
+                //Debug.Log("Color is Blue");
                 break;
 
             default:
@@ -140,11 +140,11 @@ public class BombController : NetworkBehaviour, IExplodable
             if (hit2D)
             {
                 isBlocked = true;
-                Debug.Log("Bomb Blocked by" + hit2D.collider.gameObject.name + " PSO: " + transform.position);
+                //Debug.Log("Bomb Blocked by" + hit2D.collider.gameObject.name + " PSO: " + transform.position);
             }
             else
             {
-                Debug.Log("Bomb Moving" + direction + " PSO: " + transform.position);
+                //Debug.Log("Bomb Moving" + direction + " PSO: " + transform.position);
                 transform.position += (Vector3)Dir * Time.deltaTime * bombMovementSpeed;
                 yield return null;
             }
