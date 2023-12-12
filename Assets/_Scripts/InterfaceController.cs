@@ -27,6 +27,7 @@ public class InterfaceController : MonoBehaviour
 		{
 			manager = FindObjectOfType<GameManager>();
 		}
+		SetJoinCode();
 		manager.curRedPlayers.OnValueChanged += PlayerTeamNumberChanged;
 		manager.curBluePlayers.OnValueChanged += PlayerTeamNumberChanged;
 		manager.OnGameEnd += OnGameEnd;
@@ -42,9 +43,9 @@ public class InterfaceController : MonoBehaviour
 		manager.curTimeInSeconds.OnValueChanged -= UpdateRoundTimer;
 	}
 
-	public void SetJoinCode(string joinCode)
+	public void SetJoinCode()
 	{
-		_interfaceJoinCode.text = joinCode;
+		_interfaceJoinCode.text = RelayManager.JoinCode;
 		_interfaceJoinCodeGroup.SetActive(true);
 	}
 	[ClientRpc]

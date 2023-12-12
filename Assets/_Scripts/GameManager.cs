@@ -49,11 +49,11 @@ public class GameManager : NetworkBehaviour
             instance = null;
         }
     }
-    NetworkVariable<bool> hasStarted = new NetworkVariable<bool>(false);
+    NetworkVariable<bool> gameIsActive = new NetworkVariable<bool>(false);
 
     private void StartRound()
     {
-        hasStarted.Value = true;
+        gameIsActive.Value = true;
         curTimeInSeconds.Value = roundDurationSeconds;
         startedTime.Value = (int)Time.time;
     }
@@ -92,7 +92,7 @@ public class GameManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            if (!hasStarted.Value) return;
+            if (!gameIsActive.Value) return;
             if (curTimeInSeconds.Value > 0)
             {
                 curTimeInSeconds.Value = roundDurationSeconds - ((int)Time.time - startedTime.Value);
@@ -105,6 +105,7 @@ public class GameManager : NetworkBehaviour
     [ServerRpc]
     private void EndRoundServerRpc(TeamColor color)
     {
+        gameIsActive.Value = false;
         Debug.Log("Game ended" + color.ToString() + " won!");
         if (IsHost)
         {
@@ -115,30 +116,12 @@ public class GameManager : NetworkBehaviour
             RaiseOnGameEnd(color);
             EndRoundClientRpc(color);
         }
-        switch (color)
-        {
-            case TeamColor.RED:
-                break;
-
-            case TeamColor.BLUE:
-
-                break;
-        }
     }
     [ClientRpc]
     private void EndRoundClientRpc(TeamColor color)
     {
         Debug.Log("Game ended" + color.ToString() + " won!");
         RaiseOnGameEnd(color);
-        switch (color)
-        {
-            case TeamColor.RED:
-                break;
-
-            case TeamColor.BLUE:
-
-                break;
-        }
     }
 
 

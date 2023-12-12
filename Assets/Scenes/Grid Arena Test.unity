@@ -14120,7 +14120,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 644407541}
-    PlayerPrefab: {fileID: 7776204946100807362, guid: 082d781335f7d784295d1775c799c122, type: 3}
+    PlayerPrefab: {fileID: 0}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 4681d303504a94c4c981ad3d6b1b8009, type: 2}
@@ -32956,7 +32956,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.625
+  orthographic size: 10.296875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
