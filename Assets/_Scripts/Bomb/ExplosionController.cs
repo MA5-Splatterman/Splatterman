@@ -95,7 +95,6 @@ public class ExplosionController : NetworkBehaviour
 
     private void CreateExplosionLine(Sprite line, Sprite end, Vector2 direction)
     {
-        Debug.Log("Creating Line");
 
         CreateExplosionVisuals(direction, line, end);
         ProcessExplosionImpact(direction);

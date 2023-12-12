@@ -8,11 +8,11 @@ using UnityEngine.InputSystem;
 public class PlayerController : NetworkBehaviour, IExplodable
 {
     [Header("Stats")]
-    [SerializeField] private int moveSpeed;
-    [SerializeField] private int bombAmount;
-    [SerializeField] private int bombRange;
+    [SerializeField] NetworkVariable<int> moveSpeed = new NetworkVariable<int>();
+    [SerializeField] NetworkVariable<int> bombAmount = new NetworkVariable<int>();
+    [SerializeField] NetworkVariable<int> bombRange = new NetworkVariable<int>();
     [SerializeField] public NetworkVariable<bool> canKickBombs = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [SerializeField] private bool bombsPierce;
+    [SerializeField] NetworkVariable<bool> bombPierce = new NetworkVariable<bool>();
 
     public NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
 
@@ -171,7 +171,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void MovePlayer(Vector2 direction)
     {
-        rb2d.velocity = direction * moveSpeed;
+        rb2d.velocity = direction * (moveSpeed.Value/2);
     }
 
 
@@ -197,5 +197,35 @@ public class PlayerController : NetworkBehaviour, IExplodable
     public void ExplosionHit(TeamColor color)
     {
         isDead.Value = true;
+    }
+
+    public void UpdateStats(powerUp stat, int amountToChangeBy)
+    {
+        switch (stat)
+        {
+            case powerUp.Speed:
+                moveSpeed.Value += amountToChangeBy;
+                break;
+
+            case powerUp.BombPower:
+                bombRange.Value += amountToChangeBy;
+                break;
+
+            case powerUp.BombAmount:
+                if (bombAmount.Value == 1 && amountToChangeBy == -1)
+                {
+                    return;
+                }
+                bombAmount.Value += amountToChangeBy;
+                break;
+
+            case powerUp.Kick:
+                canKickBombs.Value = true;
+                break;
+
+            case powerUp.Pierce:
+                bombPierce.Value = true;
+                break;
+        }
     }
 }

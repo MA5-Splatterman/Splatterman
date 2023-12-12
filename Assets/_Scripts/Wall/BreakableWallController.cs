@@ -9,6 +9,10 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
     [SerializeField] private ParticleSystem smokeParticle, brickParticle;
     [SerializeField] private GameObject particles;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private GameObject powerup;
+    [SerializeField] private int PowerupDropProbability;
+    private bool hasRolledPowerupDrop = false;
+    private TeamColor color;
 
     [ClientRpc]
     public void HasBeenHitClientRpc()
@@ -23,7 +27,10 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
         Destroy(particles, brickParticle.main.duration > smokeParticle.main.duration ? brickParticle.main.duration : smokeParticle.main.duration);
         yield return new WaitForSeconds(0.1f);
         spriteRenderer.enabled = false;
-        DropPowerup();
+        if (!hasRolledPowerupDrop)
+        {
+            DropPowerup();
+        }
         Destroy(gameObject, 0.6f);
         yield return new WaitForSeconds(0.5f);
         var smokeEmission = smokeParticle.emission;
@@ -34,11 +41,20 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
 
     private void DropPowerup()
     {
-
+        hasRolledPowerupDrop = true;
+        if (Random.Range(0,101) > PowerupDropProbability)
+        {
+            return;
+        }
+        GameObject GO = Instantiate(powerup, transform);
+        GO.GetComponent<NetworkObject>().Spawn();
+        GO.GetComponent<PowerUpController>().SetTeam(color);
+        GO.transform.parent = null;
     }
 
     public void ExplosionHit(TeamColor color)
     {
+        this.color = color;
         HasBeenHitClientRpc();
     }
 }

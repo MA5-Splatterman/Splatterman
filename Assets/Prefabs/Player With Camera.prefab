@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3227928563
+  GlobalObjectIdHash: 2785146980
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -363,12 +363,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f42250e2e5d3e3d4c80aec8b7582b2af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4
-  bombAmount: 1
-  bombRange: 0
+  moveSpeed:
+    m_InternalValue: 8
+  bombAmount:
+    m_InternalValue: 1
+  bombRange:
+    m_InternalValue: 2
   canKickBombs:
     m_InternalValue: 1
-  bombsPierce: 0
+  bombPierce:
+    m_InternalValue: 0
   team:
     m_InternalValue: 0
   playerCamera: {fileID: 8517955134445692717}
@@ -466,7 +470,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 704
+    m_Bits: 1728
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

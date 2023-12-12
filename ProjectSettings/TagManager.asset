@@ -8,6 +8,7 @@ TagManager:
   - Bomb
   - Wall
   - Paintable
+  - Powerup
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Breakable Wall
   - Paintable Tile
   - Bomb
-  - 
+  - Powerup
   - 
   - 
   - 
