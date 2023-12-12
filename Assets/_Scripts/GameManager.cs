@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -26,22 +27,34 @@ public class GameManager : NetworkBehaviour
 		base.OnNetworkSpawn();
         RecalculateGameState();
 
+
         curBluePlayers.OnValueChanged += (previousValue, newValue) =>
         {
-            if (newValue == 0)
+            if (newValue == 0 && gameIsActive.Value)
             {
                 EndRoundServerRpc(TeamColor.RED);
             }
         };
         curRedPlayers.OnValueChanged += (previousValue, newValue) =>
         {
-            if (newValue == 0)
+            if (newValue == 0 && gameIsActive.Value)
             {
                 EndRoundServerRpc(TeamColor.BLUE);
             }
         };
-        StartRound();
+        NetworkManager.Singleton.OnClientConnectedCallback += StartLogic;
+        StartLogic(0);
     }
+
+    private void StartLogic(ulong obj)
+    {
+        if (NetworkManager.Singleton.ConnectedClients.Count >= 2 && !gameIsActive.Value)
+        {
+            StartRound();
+        }
+    }
+
+
     public override void OnNetworkDespawn()
     {
         if (IsServer)
