@@ -39,6 +39,7 @@ public class LobbyInstance : MonoBehaviour
     {
         RelayCode = Lobby.Data["RelayCode"].Value;
         HasStarted = Lobby.Data["HasStarted"].Value == "true" ? true : false;
+        Debug.Log("Data changed");
         if (HasStarted)
         {
             Debug.Log("Game has started");
@@ -57,6 +58,7 @@ public class LobbyInstance : MonoBehaviour
     }
     private void CallbacksOnLobbyDeleted()
     {
+        Debug.Log("Lobby Deleted");
         Destroy(gameObject);
     }
 
@@ -66,27 +68,24 @@ public class LobbyInstance : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        foreach (var player in Lobby.Players)
+        
+        LobbyService.Instance.GetLobbyAsync(Lobby.Id).ContinueWith((task) =>
         {
-            Instantiate(LobbyPlayerPrefab, LobbyPlayerList).GetComponent<LobbyPlayer>().SetPlayer(player, this);
-        }
+            Lobby = task.Result;
+            foreach (var player in Lobby.Players)
+            {
+                Instantiate(LobbyPlayerPrefab, LobbyPlayerList).GetComponent<LobbyPlayer>().SetPlayer(player, this);
+            }
+        });
     }
     private void CallbacksOnPlayerJoined(List<LobbyPlayerJoined> list)
     {
-        foreach (Transform child in LobbyPlayerList)
-        {
-            Destroy(child.gameObject);
-        }
-        foreach (var player in list)
-        {
-            Instantiate(LobbyPlayerPrefab, LobbyPlayerList).GetComponent<LobbyPlayer>().SetPlayer(player.Player, this);
-        }
+        Debug.Log("Player Joined");
+        RenderPlayerList();
     }
 
     private void CallbacksOnLobbyChanged(ILobbyChanges changes)
     {
-        RenderPlayerList();
-
     }
 
     public async Task KickPlayer(string playerId)
@@ -103,11 +102,8 @@ public class LobbyInstance : MonoBehaviour
                 if (item.Id == playerId)
                 {
                     await LobbyService.Instance.RemovePlayerAsync(Lobby.Id, playerId);
+
                     Debug.Log($"Kicked player {item.Id}");
-                }
-                else
-                {
-                    Debug.Log($"Player {item.Id} is not the player to kick");
                 }
             }
         }
