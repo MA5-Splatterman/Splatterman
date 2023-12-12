@@ -65,7 +65,7 @@ public class GameManager : NetworkBehaviour
             instance = null;
         }
     }
-    NetworkVariable<bool> gameIsActive = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> gameIsActive = new NetworkVariable<bool>(false);
 
     private void StartRound()
     {
