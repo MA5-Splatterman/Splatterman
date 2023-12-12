@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameManager : NetworkBehaviour
 {
     public delegate void RoundCallback(TeamColor color);
-	public RoundCallback OnGameEnd;
+    public RoundCallback OnGameEnd;
 
     [SerializeField] private int roundDurationSeconds;
 
@@ -51,7 +51,7 @@ public class GameManager : NetworkBehaviour
     }
     NetworkVariable<bool> hasStarted = new NetworkVariable<bool>(false);
 
-	private void StartRound()
+    private void StartRound()
     {
         hasStarted.Value = true;
         curTimeInSeconds.Value = roundDurationSeconds;
@@ -74,8 +74,11 @@ public class GameManager : NetworkBehaviour
                 bluePlayers++;
             }
         }
-        curRedPlayers.Value = redPlayers;
-        curBluePlayers.Value = bluePlayers;
+        if (IsServer)
+        {
+            curRedPlayers.Value = redPlayers;
+            curBluePlayers.Value = bluePlayers;
+        }
     }
 
     public TeamColor CalculateCurrentWinningTeam()
@@ -101,6 +104,29 @@ public class GameManager : NetworkBehaviour
 
     [ServerRpc]
     private void EndRoundServerRpc(TeamColor color)
+    {
+        Debug.Log("Game ended" + color.ToString() + " won!");
+        if (IsHost)
+        {
+            EndRoundClientRpc(color);
+        }
+        else
+        {
+            RaiseOnGameEnd(color);
+            EndRoundClientRpc(color);
+        }
+        switch (color)
+        {
+            case TeamColor.RED:
+                break;
+
+            case TeamColor.BLUE:
+
+                break;
+        }
+    }
+    [ClientRpc]
+    private void EndRoundClientRpc(TeamColor color)
     {
         Debug.Log("Game ended" + color.ToString() + " won!");
         RaiseOnGameEnd(color);

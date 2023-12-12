@@ -13,22 +13,38 @@ public class LobbyInstance : MonoBehaviour
 {
     public Lobby Lobby { get; set; }
     [SerializeField] private TMP_Text LobbyCode;
+    [SerializeField] private TMP_Text JoinHostButton;
+    
     [SerializeField] private GameObject LobbyPlayerPrefab;
     [SerializeField] private Transform LobbyPlayerList;
     private LobbyEventCallbacks callbacks = new LobbyEventCallbacks();
+    public string RelayCode { get; set; }
+    public bool HasStarted { get; set; }
 
     public async void SetLobbyData(Lobby lobby)
     {
         Lobby = lobby;
         LobbyCode.text = lobby.LobbyCode;
-
-        await Lobbies.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
+        RelayCode = lobby.Data["RelayCode"].Value;
         callbacks.LobbyDeleted += CallbacksOnLobbyDeleted;
         callbacks.LobbyChanged += CallbacksOnLobbyChanged;
         callbacks.KickedFromLobby += CallbacksOnLobbyDeleted;
         callbacks.PlayerJoined += CallbacksOnPlayerJoined;
+        callbacks.DataChanged += CallbacksOnLobbyDataChanged;
+        await Lobbies.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
         RenderPlayerList();
     }
+
+    private void CallbacksOnLobbyDataChanged(Dictionary<string, ChangedOrRemovedLobbyValue<DataObject>> dictionary)
+    {
+        RelayCode = Lobby.Data["RelayCode"].Value;
+        HasStarted = Lobby.Data["HasStarted"].Value == "true" ? true : false;
+        if(HasStarted)
+        {
+            Debug.Log("Game has started");
+        }
+    }
+
     private void OnDisable()
     {
         if (callbacks != null)
@@ -62,6 +78,7 @@ public class LobbyInstance : MonoBehaviour
 
     private void CallbacksOnLobbyChanged(ILobbyChanges changes)
     {
+        RenderPlayerList();
 
     }
 
@@ -85,7 +102,6 @@ public class LobbyInstance : MonoBehaviour
                 {
                     Debug.Log($"Player {item.Id} is not the player to kick");
                 }
-
             }
         }
         catch (LobbyServiceException e)

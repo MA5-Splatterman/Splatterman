@@ -25,6 +25,22 @@ public class LobbyManager : MonoBehaviour
         string lobbyName = "new lobby";
         int maxPlayers = 4;
         CreateLobbyOptions options = new CreateLobbyOptions();
+        await RelayManager.CreateRelay(true);
+        options.Data = new Dictionary<string, DataObject>()
+            {
+                {
+                    "RelayCode", new DataObject(
+                        visibility: DataObject.VisibilityOptions.Member,
+                        value: RelayManager.JoinCode,
+                        index: DataObject.IndexOptions.S1)
+                },
+                {
+                    "HasStarted", new DataObject(
+                        visibility: DataObject.VisibilityOptions.Member,
+                        value: "false",
+                        index: DataObject.IndexOptions.S1)
+                },
+            };
         options.IsPrivate = IsPrivate;
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
         Debug.Log($"Created lobby {lobby.Id} with code {lobby.LobbyCode} and host {lobby.HostId}");
