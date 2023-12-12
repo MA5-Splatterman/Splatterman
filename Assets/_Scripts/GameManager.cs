@@ -6,8 +6,6 @@ using UnityEngine;
 public class GameManager : NetworkBehaviour
 {
     public delegate void RoundCallback(TeamColor color);
-    public RoundCallback OnPlayerKilled;
-    public RoundCallback OnPlayerJoinTeam;
     public RoundCallback OnGameEnd;
 
     [SerializeField] private int roundDurationSeconds;
@@ -22,11 +20,10 @@ public class GameManager : NetworkBehaviour
     static public GameManager instance;
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
-        {
-            instance = this;
-        }
-        base.OnNetworkSpawn();
+
+        instance = this;
+        
+		base.OnNetworkSpawn();
         RecalculateGameState();
 
         curBluePlayers.OnValueChanged += (previousValue, newValue) =>
@@ -52,10 +49,11 @@ public class GameManager : NetworkBehaviour
             instance = null;
         }
     }
-    NetworkVariable<bool> hasStarted = new NetworkVariable<bool>(false);
+    NetworkVariable<bool> gameIsActive = new NetworkVariable<bool>(false);
+
     private void StartRound()
     {
-        hasStarted.Value = true;
+        gameIsActive.Value = true;
         curTimeInSeconds.Value = roundDurationSeconds;
         startedTime.Value = (int)Time.time;
     }
@@ -76,8 +74,11 @@ public class GameManager : NetworkBehaviour
                 bluePlayers++;
             }
         }
-        curRedPlayers.Value = redPlayers;
-        curBluePlayers.Value = bluePlayers;
+        if (IsServer)
+        {
+            curRedPlayers.Value = redPlayers;
+            curBluePlayers.Value = bluePlayers;
+        }
     }
 
     public TeamColor CalculateCurrentWinningTeam()
@@ -91,7 +92,7 @@ public class GameManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            if (!hasStarted.Value) return;
+            if (!gameIsActive.Value) return;
             if (curTimeInSeconds.Value > 0)
             {
                 curTimeInSeconds.Value = roundDurationSeconds - ((int)Time.time - startedTime.Value);
@@ -104,52 +105,28 @@ public class GameManager : NetworkBehaviour
     [ServerRpc]
     private void EndRoundServerRpc(TeamColor color)
     {
+        gameIsActive.Value = false;
+        Debug.Log("Game ended" + color.ToString() + " won!");
+        if (IsHost)
+        {
+            EndRoundClientRpc(color);
+        }
+        else
+        {
+            RaiseOnGameEnd(color);
+            EndRoundClientRpc(color);
+        }
+    }
+    [ClientRpc]
+    private void EndRoundClientRpc(TeamColor color)
+    {
         Debug.Log("Game ended" + color.ToString() + " won!");
         RaiseOnGameEnd(color);
-        switch (color)
-        {
-            case TeamColor.RED:
-                break;
-
-            case TeamColor.BLUE:
-
-                break;
-        }
     }
 
 
     public void RaiseOnGameEnd(TeamColor color)
     {
         OnGameEnd?.Invoke(color);
-    }
-
-    public void RaiseOnPlayerKilled(TeamColor color)
-    {
-        switch (color)
-        {
-            case TeamColor.RED:
-                curRedPlayers.Value--;
-                break;
-
-            case TeamColor.BLUE:
-                curBluePlayers.Value--;
-                break;
-        }
-        OnPlayerKilled?.Invoke(color);
-    }
-
-    public void RaiseOnPlayerJoinTeam(TeamColor color)
-    {
-        switch (color)
-        {
-            case TeamColor.RED:
-                curRedPlayers.Value++;
-                break;
-
-            case TeamColor.BLUE:
-                curBluePlayers.Value++;
-                break;
-        }
-        OnPlayerJoinTeam?.Invoke(color);
     }
 }

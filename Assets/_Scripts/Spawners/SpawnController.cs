@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class SpawnController : MonoBehaviour
+public class SpawnController : NetworkBehaviour
 {
 	private List<Transform> _spawnLocations = new();
+	[SerializeField] GameObject _playerPrefab;
 	public static SpawnController Instance { get; private set; }
 	public static Vector3 GetSpawnLocation(int index)
 	{
@@ -19,4 +21,34 @@ public class SpawnController : MonoBehaviour
 			_spawnLocations.Add(child);
 		}
 	}
+	public override void OnNetworkSpawn()
+	{
+		if (IsServer)
+		{
+			var connections = NetworkManager.Singleton.ConnectedClients;
+			foreach (var item in connections)
+			{
+				SpawnPlayer(item.Value.ClientId);
+			}
+			NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
+			NetworkManager.Singleton.OnClientDisconnectCallback += PlayerDisconnected;
+		}
+	}
+
+	private void PlayerDisconnected(ulong id)
+	{
+		GameManager.instance.RecalculateGameState();
+	}
+
+	public override void OnNetworkDespawn()
+	{
+		NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
+	}
+
+	private void SpawnPlayer(ulong id)
+	{
+		Instantiate(_playerPrefab).GetComponent<NetworkObject>().SpawnAsPlayerObject(id);
+	}
+
+
 }

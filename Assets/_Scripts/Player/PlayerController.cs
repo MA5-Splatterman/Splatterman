@@ -94,11 +94,6 @@ public class PlayerController : NetworkBehaviour, IExplodable
         _relayManager = FindFirstObjectByType<RelayManager>();
         _interfaceController = FindFirstObjectByType<InterfaceController>();
 
-        if (_relayManager != default && _interfaceController != default && _relayManager.JoinCode != default)
-        {
-            _interfaceController.SetJoinCode(_relayManager.JoinCode);
-        }
-
         UpdateTeamColor();
     }
 
