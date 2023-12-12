@@ -33479,6 +33479,8 @@ MonoBehaviour:
   curBluePlayers:
     m_InternalValue: 0
   paintableTileManager: {fileID: 159459331}
+  gameIsActive:
+    m_InternalValue: 0
 --- !u!4 &1946340264
 Transform:
   m_ObjectHideFlags: 0
@@ -38813,6 +38815,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: InterfaceController
       objectReference: {fileID: 0}
+    - target: {fileID: 5990390495383250060, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: _gameManager
+      value: 
+      objectReference: {fileID: 1946340263}
     - target: {fileID: 6468095280464594846, guid: eba1a9b25928972468a53480215117db, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5

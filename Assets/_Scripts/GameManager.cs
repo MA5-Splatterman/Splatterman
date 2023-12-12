@@ -21,7 +21,6 @@ public class GameManager : NetworkBehaviour
     static public GameManager instance;
     public override void OnNetworkSpawn()
     {
-
         instance = this;
 
         base.OnNetworkSpawn();
@@ -49,7 +48,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private void StartLogic(ulong obj)
+    public void StartLogic(ulong obj)
     {
         if (NetworkManager.Singleton.ConnectedClients.Count >= 2 && !gameIsActive.Value)
         {
