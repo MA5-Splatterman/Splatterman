@@ -4859,7 +4859,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -9932,7 +9932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3527721938
+  GlobalObjectIdHash: 2361651674
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -9956,6 +9956,8 @@ MonoBehaviour:
   brickParticle: {fileID: 1174663286226930498}
   particles: {fileID: 3227728608736856054}
   spriteRenderer: {fileID: 5111195021438762796}
+  powerup: {fileID: 1322701301538193664, guid: 92fda51d6fa5f734695fa88935516805, type: 3}
+  PowerupDropProbability: 100
 --- !u!61 &5216520394632240391
 BoxCollider2D:
   m_ObjectHideFlags: 0
