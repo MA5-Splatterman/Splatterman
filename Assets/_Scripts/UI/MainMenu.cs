@@ -33,7 +33,7 @@ public class MainMenu : MonoBehaviour
     {
         if (isWorking) return; // Prevent Spamming Netwworking calls while waiting for a response
         isWorking = true;
-        var lobby = await LobbyManager.CreateLobby(true);
+        var lobby = await LobbyManager.CreateLobby(false);
         if (lobby == null)
         {
             Debug.Log("Lobby is null");

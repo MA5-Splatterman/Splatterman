@@ -25,7 +25,7 @@ public class LobbyInstance : MonoBehaviour
     {
         Lobby = lobby;
         LobbyCode.text = lobby.LobbyCode;
-        RelayCode = lobby.Data["RelayCode"].Value;
+        // RelayCode = lobby.Data["RelayCode"].Value;
         callbacks.LobbyDeleted += CallbacksOnLobbyDeleted;
         callbacks.LobbyChanged += CallbacksOnLobbyChanged;
         callbacks.KickedFromLobby += CallbacksOnLobbyDeleted;
