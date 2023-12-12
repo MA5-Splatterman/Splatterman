@@ -6,9 +6,7 @@ using UnityEngine;
 public class GameManager : NetworkBehaviour
 {
     public delegate void RoundCallback(TeamColor color);
-    public RoundCallback OnPlayerKilled;
-    public RoundCallback OnPlayerJoinTeam;
-    public RoundCallback OnGameEnd;
+	public RoundCallback OnGameEnd;
 
     [SerializeField] private int roundDurationSeconds;
 
@@ -26,6 +24,7 @@ public class GameManager : NetworkBehaviour
         {
             instance = this;
         }
+
         base.OnNetworkSpawn();
         RecalculateGameState();
 
@@ -53,7 +52,8 @@ public class GameManager : NetworkBehaviour
         }
     }
     NetworkVariable<bool> hasStarted = new NetworkVariable<bool>(false);
-    private void StartRound()
+
+	private void StartRound()
     {
         hasStarted.Value = true;
         curTimeInSeconds.Value = roundDurationSeconds;
@@ -121,35 +121,5 @@ public class GameManager : NetworkBehaviour
     public void RaiseOnGameEnd(TeamColor color)
     {
         OnGameEnd?.Invoke(color);
-    }
-
-    public void RaiseOnPlayerKilled(TeamColor color)
-    {
-        switch (color)
-        {
-            case TeamColor.RED:
-                curRedPlayers.Value--;
-                break;
-
-            case TeamColor.BLUE:
-                curBluePlayers.Value--;
-                break;
-        }
-        OnPlayerKilled?.Invoke(color);
-    }
-
-    public void RaiseOnPlayerJoinTeam(TeamColor color)
-    {
-        switch (color)
-        {
-            case TeamColor.RED:
-                curRedPlayers.Value++;
-                break;
-
-            case TeamColor.BLUE:
-                curBluePlayers.Value++;
-                break;
-        }
-        OnPlayerJoinTeam?.Invoke(color);
     }
 }
