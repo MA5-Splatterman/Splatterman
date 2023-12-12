@@ -32,6 +32,12 @@ public class LobbyInstance : MonoBehaviour
         callbacks.KickedFromLobby += CallbacksOnLobbyDeleted;
         callbacks.PlayerJoined += CallbacksOnPlayerJoined;
         callbacks.DataChanged += CallbacksOnLobbyDataChanged;
+        callbacks.PlayerLeft += CallbacksOnPlayerLeft;
+        RenderPlayerList();
+    }
+
+    private void CallbacksOnPlayerLeft(List<int> list)
+    {
         RenderPlayerList();
     }
 
