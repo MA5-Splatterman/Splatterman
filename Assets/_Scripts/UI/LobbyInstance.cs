@@ -26,12 +26,12 @@ public class LobbyInstance : MonoBehaviour
         Lobby = lobby;
         LobbyCode.text = lobby.LobbyCode;
         // RelayCode = lobby.Data["RelayCode"].Value;
+        await Lobbies.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
         callbacks.LobbyDeleted += CallbacksOnLobbyDeleted;
         callbacks.LobbyChanged += CallbacksOnLobbyChanged;
         callbacks.KickedFromLobby += CallbacksOnLobbyDeleted;
         callbacks.PlayerJoined += CallbacksOnPlayerJoined;
         callbacks.DataChanged += CallbacksOnLobbyDataChanged;
-        await Lobbies.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
         RenderPlayerList();
     }
 
