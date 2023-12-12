@@ -49,7 +49,6 @@ public class SpawnController : NetworkBehaviour
 			}
 		}
 		idPlayer.Despawn(true);
-		GameManager.instance.RecalculateGameState();
 	}
 
 	public override void OnNetworkDespawn()

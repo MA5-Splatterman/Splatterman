@@ -104,7 +104,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
         {
             PlayerCount--;
             players.Remove(this);
-
+            GameManager.instance.RecalculateGameState();
         }
     }
 
@@ -171,7 +171,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void MovePlayer(Vector2 direction)
     {
-        rb2d.velocity = direction * (moveSpeed.Value/2);
+        rb2d.velocity = direction * (moveSpeed.Value / 2);
     }
 
 
