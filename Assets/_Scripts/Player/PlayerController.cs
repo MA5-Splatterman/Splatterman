@@ -177,7 +177,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void OnDropBombPerformed(InputAction.CallbackContext context)
     {
-        if (IsOwner)
+        if (IsOwner && GameManager.instance.gameIsActive.Value )
         {
             DropBombServerRpc();
         }

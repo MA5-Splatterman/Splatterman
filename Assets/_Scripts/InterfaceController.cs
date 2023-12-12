@@ -13,10 +13,12 @@ public class InterfaceController : MonoBehaviour
 	[SerializeField] private TMP_Text _interfaceTeamsValue;
 	[SerializeField] private TMP_Text _roundTimer;
 	[SerializeField] private TextAnimator_TMP _roundTimerAnims;
-	[SerializeField] private TMP_Text _roundEndText;
-	[SerializeField] private GameObject _roundEndObject;
 
 	[SerializeField] private GameManager manager;
+	[Header("Round End Activities")]
+	[SerializeField] private TMP_Text _roundEndText;
+	[SerializeField] private GameObject _roundEndObject;
+	[SerializeField] private GameObject _roundEndButtons;
 
 
 	private void OnEnable()
@@ -50,6 +52,7 @@ public class InterfaceController : MonoBehaviour
 	private void OnGameEndClientRpc(TeamColor team)
 	{
 		_roundEndObject.SetActive(true);
+		_roundEndButtons.SetActive(true);
 		switch (team)
 		{
 			case TeamColor.RED:
