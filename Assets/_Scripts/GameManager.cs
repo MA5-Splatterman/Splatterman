@@ -23,8 +23,8 @@ public class GameManager : NetworkBehaviour
     {
 
         instance = this;
-        
-		base.OnNetworkSpawn();
+
+        base.OnNetworkSpawn();
         RecalculateGameState();
 
 
@@ -42,8 +42,11 @@ public class GameManager : NetworkBehaviour
                 EndRoundServerRpc(TeamColor.BLUE);
             }
         };
-        NetworkManager.Singleton.OnClientConnectedCallback += StartLogic;
-        StartLogic(0);
+        if (IsServer)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += StartLogic;
+            StartLogic(0);
+        }
     }
 
     private void StartLogic(ulong obj)

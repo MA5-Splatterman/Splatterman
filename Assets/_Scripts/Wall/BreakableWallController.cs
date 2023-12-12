@@ -29,7 +29,10 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
         spriteRenderer.enabled = false;
         if (!hasRolledPowerupDrop)
         {
-            DropPowerup();
+            if (IsServer)
+            {
+                DropPowerup();
+            }
         }
         Destroy(gameObject, 0.6f);
         yield return new WaitForSeconds(0.5f);
@@ -42,7 +45,7 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
     private void DropPowerup()
     {
         hasRolledPowerupDrop = true;
-        if (Random.Range(0,101) > PowerupDropProbability)
+        if (Random.Range(0, 101) > PowerupDropProbability)
         {
             return;
         }
