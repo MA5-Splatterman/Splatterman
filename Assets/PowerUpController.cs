@@ -109,6 +109,7 @@ public class PowerUpController : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(!IsServer) return;
         if (collision.CompareTag("Player") && (collision.GetComponent<PlayerController>().team.Value == team.Value || team.Value == TeamColor.NONE))
         {
             collision.GetComponent<PlayerController>().UpdateStats(powerUpAbility.Value, modifier.Value);
