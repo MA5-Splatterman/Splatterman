@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 500
+  m_text: 300
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ac2a1619cc32461478af2efc2fd1e2ae, type: 2}
   m_sharedMaterial: {fileID: 8694992682865365972, guid: ac2a1619cc32461478af2efc2fd1e2ae, type: 2}
@@ -1784,10 +1784,10 @@ MonoBehaviour:
   _interfaceTeamsValue: {fileID: 9219680144198779491}
   _roundTimer: {fileID: 768374479158320960}
   _roundTimerAnims: {fileID: 8824224308934085047}
+  manager: {fileID: 0}
   _roundEndText: {fileID: 5039764923715774701}
   _roundEndObject: {fileID: 167856735581181899}
   _roundEndButtons: {fileID: 548071061201738370}
-  manager: {fileID: 0}
 --- !u!1 &6886609051106742450
 GameObject:
   m_ObjectHideFlags: 0
