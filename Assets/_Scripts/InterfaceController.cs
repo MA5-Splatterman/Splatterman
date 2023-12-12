@@ -76,7 +76,7 @@ public class InterfaceController : MonoBehaviour
 
 	public void SetPlayersPerTeam(int red = 0, int blue = 0)
 	{
-		_interfaceTeamsValue.SetText($"<color=red>{red}</color> | <color=blue>{blue}</color>");
+		_interfaceTeamsValue.SetText($"<color=red>{red}</color>|<color=blue>{blue}</color>");
 	}
 
 	private void PlayerTeamNumberChanged(int oldValue, int newValue)
