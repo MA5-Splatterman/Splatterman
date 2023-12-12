@@ -15,7 +15,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] Transform LobbyPanelParent;
 
     // Prevent Spamming Netwworking calls while waiting for a response
-    bool isWorking = false;
+    bool isProcesssingRequest = false;
     private void Awake()
     {
         if (UnityServices.State == ServicesInitializationState.Initialized)
@@ -31,58 +31,53 @@ public class MainMenu : MonoBehaviour
     public string LobbyJoinCode { get; set; }
     public async void HostLobbyInput()
     {
-        if (isWorking) return; // Prevent Spamming Netwworking calls while waiting for a response
-        isWorking = true;
+        if (isProcesssingRequest) return; // Prevent Spamming Netwworking calls while waiting for a response
+        isProcesssingRequest = true;
         var lobby = await LobbyManager.CreateLobby(false);
         if (lobby == null)
         {
             Debug.Log("Lobby is null");
-            isWorking = false;
+            isProcesssingRequest = false;
             return;
         }
-
         Instantiate(LobbyPanelPrefab, LobbyPanelParent).GetComponent<LobbyInstance>().SetLobbyData(lobby);
-        isWorking = false;
+        isProcesssingRequest = false;
     }
 
     public async void JoinLobbyInput()
     {
-        if (isWorking) return; // Prevent Spamming Netwworking calls while waiting for a response
-        isWorking = true;
+        if (isProcesssingRequest) return; // Prevent Spamming Netwworking calls while waiting for a response
+        isProcesssingRequest = true;
         if (string.IsNullOrEmpty(LobbyJoinCode))
         {
             Debug.Log("LobbyJoinCode is null or empty");
-            isWorking = false;
+            isProcesssingRequest = false;
             return;
         }
         var lobby = await LobbyManager.JoinLobby(LobbyJoinCode);
         if (lobby == null)
         {
             Debug.Log("Lobby is null");
-            isWorking = false;
+            isProcesssingRequest = false;
             return;
         }
         Instantiate(LobbyPanelPrefab, LobbyPanelParent).GetComponent<LobbyInstance>().SetLobbyData(lobby);
-        isWorking = false;
+        isProcesssingRequest = false;
     }
     public async void QuickJoinLobbyInput()
     {
-        if (isWorking) return; // Prevent Spamming Netwworking calls while waiting for a response
-        isWorking = true;
-        if (string.IsNullOrEmpty(LobbyJoinCode))
-        {
-            Debug.Log("LobbyJoinCode is null or empty");
-            return;
-        }
+        if (isProcesssingRequest) return; // Prevent Spamming Netwworking calls while waiting for a response
+        isProcesssingRequest = true;
         var lobby = await LobbyManager.QuickJoin();
         if (lobby == null)
         {
-            Debug.Log("Lobby is null");
-            isWorking = false;
+            Debug.Log("Lobby is null, we hostin instread");
+            isProcesssingRequest = false;
+            HostLobbyInput();
             return;
         }
         Instantiate(LobbyPanelPrefab, LobbyPanelParent).GetComponent<LobbyInstance>().SetLobbyData(lobby);
-        isWorking = false;
+        isProcesssingRequest = false;
     }
 
     public string AccountText
