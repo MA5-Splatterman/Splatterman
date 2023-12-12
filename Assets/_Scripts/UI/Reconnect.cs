@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
@@ -7,11 +8,13 @@ public class Reconnect : MonoBehaviour {
     public string LobbyId;
     public GameObject ReconnectPrefab;
     public Button button;
+    public TMP_Text LobbyCode;
     private void Awake() {
         button?.onClick.AddListener(ReconnectToLobby);
     }
     public void ReconnectData(string lobbyId) { 
         LobbyId = lobbyId;
+        LobbyCode.text = lobbyId;
 
     }
     public async void ReconnectToLobby() { 

@@ -70,29 +70,36 @@ public class LobbyInstance : MonoBehaviour
 
     public void RenderPlayerList()
     {
+
+
+        Debug.Log($"Lobby {Lobby.Id} has {Lobby.Players.Count} players");
         foreach (Transform child in LobbyPlayerList)
         {
             Destroy(child.gameObject);
         }
-        
-        LobbyService.Instance.GetLobbyAsync(Lobby.Id).ContinueWith((task) =>
+        foreach (var player in Lobby.Players)
         {
-            Lobby = task.Result;
-            foreach (var player in Lobby.Players)
-            {
-                Instantiate(LobbyPlayerPrefab, LobbyPlayerList).GetComponent<LobbyPlayer>().SetPlayer(player, this);
-            }
-        });
+            var game = Instantiate(LobbyPlayerPrefab, LobbyPlayerList);
+            game.GetComponent<LobbyPlayer>().SetPlayer(player, this);
+        }
+
     }
     private void CallbacksOnPlayerJoined(List<LobbyPlayerJoined> list)
     {
         Debug.Log("Player Joined");
-        RenderPlayerList();
+        LobbyService.Instance.GetLobbyAsync(Lobby.Id).ContinueWith((task) =>
+        {
+            Lobby = task.Result;
+            RenderPlayerList();
+        });
     }
 
     private void CallbacksOnLobbyChanged(ILobbyChanges changes)
     {
+        RenderPlayerList();
     }
+
+
 
     public async Task KickPlayer(string playerId)
     {
