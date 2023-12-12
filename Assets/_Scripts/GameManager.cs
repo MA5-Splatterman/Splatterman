@@ -102,7 +102,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void EndRoundServerRpc(TeamColor color)
     {
         gameIsActive.Value = false;

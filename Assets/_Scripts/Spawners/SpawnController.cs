@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class SpawnController : NetworkBehaviour
@@ -38,6 +39,15 @@ public class SpawnController : NetworkBehaviour
 	private void PlayerDisconnected(ulong id)
 	{
 		GameManager.instance.RecalculateGameState();
+
+		foreach (var player in PlayerController.players)
+		{
+			if (player.GetComponent<NetworkBehaviour>().OwnerClientId == id)
+			{
+				player.GetComponent<NetworkObject>().Despawn(true);
+			}
+
+		}
 	}
 
 	public override void OnNetworkDespawn()
@@ -47,7 +57,7 @@ public class SpawnController : NetworkBehaviour
 
 	private void SpawnPlayer(ulong id)
 	{
-		Instantiate(_playerPrefab).GetComponent<NetworkObject>().SpawnAsPlayerObject(id);
+		Instantiate(_playerPrefab).GetComponent<NetworkObject>().SpawnAsPlayerObject(id, true);
 	}
 
 
