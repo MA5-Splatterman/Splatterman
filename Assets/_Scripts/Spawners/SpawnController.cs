@@ -38,7 +38,6 @@ public class SpawnController : NetworkBehaviour
 
 	private void PlayerDisconnected(ulong id)
 	{
-		GameManager.instance.RecalculateGameState();
 		NetworkObject idPlayer = null;
 		foreach (var player in PlayerController.players)
 		{
@@ -50,6 +49,7 @@ public class SpawnController : NetworkBehaviour
 			}
 		}
 		idPlayer.Despawn(true);
+		GameManager.instance.RecalculateGameState();
 	}
 
 	public override void OnNetworkDespawn()

@@ -18,8 +18,6 @@ public class InterfaceController : MonoBehaviour
 
 	[SerializeField] private GameManager manager;
 
-	private int redTeamNumber;
-	private int blueTeamNumber;
 
 	private void OnEnable()
 	{
