@@ -14,7 +14,7 @@ public class LobbyInstance : MonoBehaviour
     public Lobby Lobby { get; set; }
     [SerializeField] private TMP_Text LobbyCode;
     [SerializeField] private TMP_Text JoinHostButton;
-    
+
     [SerializeField] private GameObject LobbyPlayerPrefab;
     [SerializeField] private Transform LobbyPlayerList;
     private LobbyEventCallbacks callbacks = new LobbyEventCallbacks();
@@ -39,7 +39,7 @@ public class LobbyInstance : MonoBehaviour
     {
         RelayCode = Lobby.Data["RelayCode"].Value;
         HasStarted = Lobby.Data["HasStarted"].Value == "true" ? true : false;
-        if(HasStarted)
+        if (HasStarted)
         {
             Debug.Log("Game has started");
         }
@@ -73,7 +73,14 @@ public class LobbyInstance : MonoBehaviour
     }
     private void CallbacksOnPlayerJoined(List<LobbyPlayerJoined> list)
     {
-        RenderPlayerList();
+        foreach (Transform child in LobbyPlayerList)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (var player in list)
+        {
+            Instantiate(LobbyPlayerPrefab, LobbyPlayerList).GetComponent<LobbyPlayer>().SetPlayer(player.Player, this);
+        }
     }
 
     private void CallbacksOnLobbyChanged(ILobbyChanges changes)
