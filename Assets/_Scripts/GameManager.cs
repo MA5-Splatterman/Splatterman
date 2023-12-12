@@ -20,12 +20,10 @@ public class GameManager : NetworkBehaviour
     static public GameManager instance;
     public override void OnNetworkSpawn()
     {
-        if (IsServer)
-        {
-            instance = this;
-        }
 
-        base.OnNetworkSpawn();
+        instance = this;
+        
+		base.OnNetworkSpawn();
         RecalculateGameState();
 
         curBluePlayers.OnValueChanged += (previousValue, newValue) =>
