@@ -52,7 +52,7 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
                 return;
             }
             GameObject GO = Instantiate(powerup, transform);
-            GO.GetComponent<NetworkObject>().Spawn();
+            GO.GetComponent<NetworkObject>().Spawn(true);
             GO.GetComponent<PowerUpController>().SetTeam(color);
             GO.transform.parent = null;
         }

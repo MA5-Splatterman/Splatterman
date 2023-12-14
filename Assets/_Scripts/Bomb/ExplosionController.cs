@@ -134,7 +134,7 @@ public class ExplosionController : NetworkBehaviour
             GameObject _explosion = Instantiate(explosion);
             if (_explosion.TryGetComponent<NetworkObject>(out NetworkObject netObj))
             {
-                netObj.Spawn();
+                netObj.Spawn(true);
                 netObj.GetComponent<NetworkSpriteSetter>()
                     .SetSpriteClientRpc(((i == explosionLength - 1) ? end : line).name, team.Value);
             }

@@ -203,7 +203,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
         }
         Vector3 position = transform.position;
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
-        bomb.GetComponent<NetworkObject>().Spawn();
+        bomb.GetComponent<NetworkObject>().Spawn(true);
         BombController bombController = bomb.GetComponent<BombController>();
         bombController.BombPlaced(this, team.Value, position, bombRange.Value);
 
