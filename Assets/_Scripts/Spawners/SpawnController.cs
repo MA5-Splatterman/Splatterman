@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SpawnController : NetworkBehaviour
 {
@@ -21,15 +22,13 @@ public class SpawnController : NetworkBehaviour
 		{
 			_spawnLocations.Add(child);
 		}
-		NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
 	}
 
-	private void OnSynchronizeComplete(ulong clientId)
+	private void OnLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
 	{
-		if (IsServer)
+		foreach (var item in clientsCompleted)
 		{
-			Debug.Log("Spawning player on sync complete: " + clientId);
-			SpawnPlayer(clientId);
+			SpawnPlayer(item);
 		}
 	}
 
@@ -39,13 +38,15 @@ public class SpawnController : NetworkBehaviour
 		{
 
 			var connections = NetworkManager.Singleton.ConnectedClientsIds;
-			foreach (var id in connections)
-			{
-				Debug.Log("Spawning player on networkSpawn: " + id);
-				SpawnPlayer(id);
-			}
+			// foreach (var id in connections)
+			// {
+			// 	Debug.Log("Spawning player on networkSpawn: " + id);
+			// 	SpawnPlayer(id);
+			// }
 			NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
 			NetworkManager.Singleton.OnClientDisconnectCallback += PlayerDisconnected;
+			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadComplete;
+
 		}
 	}
 
@@ -74,7 +75,8 @@ public class SpawnController : NetworkBehaviour
 		{
 			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
 			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
-			NetworkManager.Singleton.SceneManager.OnSynchronizeComplete -= OnSynchronizeComplete;
+
+			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadComplete;
 		}
 	}
 

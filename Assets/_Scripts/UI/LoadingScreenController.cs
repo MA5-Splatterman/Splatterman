@@ -15,6 +15,7 @@ public class LoadingScreenController : MonoBehaviour
 		await RelayManager.CreateRelay(true);
 		NetworkManager.Singleton.StartHost();
 		NetworkManager.Singleton.SceneManager.PostSynchronizationSceneUnloading = true;
+		NetworkManager.Singleton.SceneManager.ActiveSceneSynchronizationEnabled = true;
 		NetworkManager.Singleton.SceneManager.LoadScene(mapRef.Name, LoadSceneMode.Single);
 	}
 
@@ -25,6 +26,7 @@ public class LoadingScreenController : MonoBehaviour
 			await RelayManager.JoinRelay(code.text);
 			NetworkManager.Singleton.StartClient();
 			NetworkManager.Singleton.SceneManager.PostSynchronizationSceneUnloading = true;
+			NetworkManager.Singleton.SceneManager.ActiveSceneSynchronizationEnabled = true;
 		}
 	}
 
@@ -33,6 +35,7 @@ public class LoadingScreenController : MonoBehaviour
 		await RelayManager.CreateRelay(false);
 		NetworkManager.Singleton.StartServer();
 		NetworkManager.Singleton.SceneManager.PostSynchronizationSceneUnloading = true;
+		NetworkManager.Singleton.SceneManager.ActiveSceneSynchronizationEnabled = true;
 		NetworkManager.Singleton.SceneManager.LoadScene(mapRef.Name, LoadSceneMode.Single);
 	}
 
