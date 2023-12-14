@@ -26,10 +26,11 @@ public class SpawnController : NetworkBehaviour
 		if (IsServer)
 		{
 
-			var connections = NetworkManager.Singleton.ConnectedClients;
-			foreach (var item in connections)
+			var connections = NetworkManager.Singleton.ConnectedClientsIds;
+			foreach (var id in connections)
 			{
-				SpawnPlayer(item.Value.ClientId);
+				Debug.Log("Spawning player on networkSpawn: " + id);
+				SpawnPlayer(id);
 			}
 			NetworkManager.Singleton.OnClientConnectedCallback += SpawnPlayer;
 			NetworkManager.Singleton.OnClientDisconnectCallback += PlayerDisconnected;
@@ -48,15 +49,20 @@ public class SpawnController : NetworkBehaviour
 				break;
 			}
 		}
-		
-		if ( idPlayer != null ) { 
-			idPlayer.Despawn( true ); 
+
+		if (idPlayer != null)
+		{
+			idPlayer.Despawn(true);
 		}
 	}
 
 	public override void OnNetworkDespawn()
 	{
-		NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
+		if (IsServer)
+		{
+			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
+			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
+		}
 	}
 
 	private void SpawnPlayer(ulong id)
