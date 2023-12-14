@@ -12,7 +12,7 @@ public enum powerUp
     Pierce
 }
 
-public class PowerUpController : NetworkBehaviour
+public class PowerUpController : NetworkBehaviour, IExplodable
 {
     [Header("Sprites")]
     [SerializeField] private Sprite positive;
@@ -38,16 +38,18 @@ public class PowerUpController : NetworkBehaviour
         {
             SetPowerup(powerUpAbility.Value, modifier.Value);
         }
+        team.OnValueChanged += (previousValue, newValue) => UpdateBackground();
     }
 
     public void SetTeam(TeamColor color)
     {
-        team.Value = color;
-        UpdateBackgroundClientRPC();
+        if (IsServer)
+        {
+            team.Value = color;
+        }
     }
 
-    [ClientRpc]
-    private void UpdateBackgroundClientRPC()
+    private void UpdateBackground()
     {
         switch (team.Value)
         {
@@ -115,5 +117,10 @@ public class PowerUpController : NetworkBehaviour
             collision.GetComponent<PlayerController>().UpdateStats(powerUpAbility.Value, modifier.Value);
             Destroy(gameObject);
         }
+    }
+
+    public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)
+    {
+        Destroy(gameObject);
     }
 }

@@ -17,6 +17,7 @@ public class BombController : NetworkBehaviour, IExplodable
 
     [SerializeField] private GameObject explosion;
     private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
+    private PlayerController owner;
 
     [SerializeField] private Material red, blue;
 
@@ -39,10 +40,11 @@ public class BombController : NetworkBehaviour, IExplodable
 
     }
 
-    public void BombPlaced(TeamColor _team, Vector2 position, int explosionRange)
+    public void BombPlaced(PlayerController player, TeamColor _team, Vector2 position, int explosionRange)
     {
         if (IsServer)
         {
+            owner = player;
             team.Value = _team;
             transform.position = new Vector2(position.x, position.y - 0.3f);
             var particleMain = bombParticle.main;
@@ -169,16 +171,17 @@ public class BombController : NetworkBehaviour, IExplodable
             colliderr.enabled = false;
             GameObject GO = Instantiate(explosion);
             GO.GetComponent<NetworkObject>().Spawn();
-            GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value);
+            GO.GetComponent<ExplosionController>().SpawnExplosion(transform.position, bombExplosionRange, team.Value, owner);
             GetComponent<NetworkObject>().Despawn();
         }
     }
 
-    public void ExplosionHit(TeamColor color)
+    public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)
     {
         if (IsServer)
         {
             StopAllCoroutines();
+            owner = explosionCreatedBy;
             team.Value = color;
             SnapToCell();
             Explode();
@@ -219,14 +222,14 @@ public class BombController : NetworkBehaviour, IExplodable
                     return;
                 }
 
-                if (player.team.Value != team.Value)
-                {
-                    team.Value = player.team.Value;
-                    UpdateColor();
-                }
-
                 if (player.canKickBombs.Value)
                 {
+                    if (player.team.Value != team.Value)
+                    {
+                        team.Value = player.team.Value;
+                        owner = player;
+                        UpdateColor();
+                    }
                     // prevent pushing bomb if player is not moving
                     if (Vector2.Distance(player.movementVector.Value, Vector2.zero) > 0.05f)
                     {

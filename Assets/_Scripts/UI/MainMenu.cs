@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] GameObject ReconnectPrefab;
     [SerializeField] GameObject LobbyPanelPrefab;
     [SerializeField] Transform LobbyPanelParent;
+    [SerializeField] GameObject Relay, Lobby, Leaderboard;
 
     // Prevent Spamming Netwworking calls while waiting for a response
     bool isProcesssingRequest = false;
@@ -157,5 +158,19 @@ public class MainMenu : MonoBehaviour
         {
             Instantiate(ReconnectPrefab, LobbyPanelParent).GetComponent<Reconnect>().ReconnectData(lobbyID);
         }
+    }
+
+    public void SwitchToPlay()
+    {
+        Relay.SetActive(true);
+        Lobby.SetActive(true);
+        Leaderboard.SetActive(false);
+    }
+
+    public void SwitchToLeaderboard()
+    {
+        Leaderboard.SetActive(true);
+        Relay.SetActive(false);
+        Lobby.SetActive(false);
     }
 }
