@@ -104,8 +104,11 @@ public class PlayerController : NetworkBehaviour, IExplodable
         {
             PlayerCount--;
             players.Remove(this);
-            GameManager.instance.RecalculateGameState();
-        }
+
+			if ( GameManager.instance != default) { 
+			    GameManager.instance.RecalculateGameState();
+			}
+		}
     }
 
     private void OnDisable()

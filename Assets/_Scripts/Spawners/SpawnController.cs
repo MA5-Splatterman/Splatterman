@@ -48,7 +48,9 @@ public class SpawnController : NetworkBehaviour
 				break;
 			}
 		}
-		idPlayer.Despawn(true);
+		if ( idPlayer != null ) { 
+			idPlayer.Despawn( true ); 
+		}
 	}
 
 	public override void OnNetworkDespawn()
