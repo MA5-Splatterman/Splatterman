@@ -27,7 +27,7 @@ public class SpawnController : NetworkBehaviour
 
 	private void OnLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
 	{
-		var connections = NetworkManager.Singleton.ConnectedClientsIds.ToArray().Distinct();
+		var connections = clientsCompleted.ToArray().Distinct();
 		Debug.Log("Connections" + clientsCompleted.Count());
 		Debug.Log("Unique Connections" + connections.Count());
 		foreach (var item in connections)
