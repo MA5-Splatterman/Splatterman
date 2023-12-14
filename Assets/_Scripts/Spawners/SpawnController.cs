@@ -25,6 +25,7 @@ public class SpawnController : NetworkBehaviour
 	{
 		if (IsServer)
 		{
+
 			var connections = NetworkManager.Singleton.ConnectedClients;
 			foreach (var item in connections)
 			{

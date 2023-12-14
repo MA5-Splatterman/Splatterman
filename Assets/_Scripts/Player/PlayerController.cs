@@ -196,6 +196,11 @@ public class PlayerController : NetworkBehaviour, IExplodable
         {
             return;
         }
+        // Posibly check if there is already a bomb in this location
+        if(Physics2D.OverlapCircle(transform.position, 0.5f, LayerMask.GetMask("Bomb")) != null)
+        {
+            return;
+        }
         Vector3 position = transform.position;
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
         bomb.GetComponent<NetworkObject>().Spawn();
