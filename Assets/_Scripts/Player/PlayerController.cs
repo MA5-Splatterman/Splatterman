@@ -112,10 +112,11 @@ public class PlayerController : NetworkBehaviour, IExplodable
             PlayerCount--;
             players.Remove(this);
 
-			if ( GameManager.instance != default) { 
-			    GameManager.instance.RecalculateGameState();
-			}
-		}
+            if (GameManager.instance != default)
+            {
+                GameManager.instance.RecalculateGameState();
+            }
+        }
     }
 
     private void OnDisable()
@@ -187,7 +188,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void OnDropBombPerformed(InputAction.CallbackContext context)
     {
-        if (IsOwner && GameManager.instance.gameIsActive.Value )
+        if (IsOwner && GameManager.instance.gameIsActive.Value)
         {
             DropBombServerRpc();
         }
@@ -254,6 +255,9 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private async void UploadScore(TeamColor color)
     {
-        var playerEntry = await LeaderboardsService.Instance.AddPlayerScoreAsync("Splatterman_Leaderboard", playerScore.Value);
+        if (IsLocalPlayer)
+        {
+            var playerEntry = await LeaderboardsService.Instance.AddPlayerScoreAsync("Splatterman_Leaderboard", playerScore.Value);
+        }
     }
 }
