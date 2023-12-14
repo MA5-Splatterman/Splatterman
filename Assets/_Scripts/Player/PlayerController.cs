@@ -37,8 +37,6 @@ public class PlayerController : NetworkBehaviour, IExplodable
     //private Vector2 movementVector = Vector2.zero;
     public static int PlayerCount = 0;
     public static HashSet<PlayerController> players = new HashSet<PlayerController>();
-    private RelayManager _relayManager;
-    private InterfaceController _interfaceController;
 
     public override void OnNetworkSpawn()
     {
@@ -92,9 +90,6 @@ public class PlayerController : NetworkBehaviour, IExplodable
             GameManager.instance?.RecalculateGameState();
             AssignTeam(team.Value);
         }
-        _relayManager = FindFirstObjectByType<RelayManager>();
-        _interfaceController = FindFirstObjectByType<InterfaceController>();
-
         UpdateTeamColor();
     }
 
