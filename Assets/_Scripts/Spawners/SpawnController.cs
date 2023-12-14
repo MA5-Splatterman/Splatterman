@@ -43,11 +43,6 @@ public class SpawnController : NetworkBehaviour
 		{
 			Debug.Log("OnNetworkSpawn");
 			var connections = NetworkManager.Singleton.ConnectedClientsIds;
-			// foreach (var id in connections)
-			// {
-			// 	Debug.Log("Spawning player on networkSpawn: " + id);
-			// 	SpawnPlayer(id);
-			// }
 			NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
 			NetworkManager.Singleton.OnClientDisconnectCallback += PlayerDisconnected;
 			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadComplete;
@@ -80,7 +75,6 @@ public class SpawnController : NetworkBehaviour
 			idPlayer.Despawn(true);
 		}
 	}
-
 	public override void OnNetworkDespawn()
 	{
 		if (IsServer)
@@ -88,8 +82,11 @@ public class SpawnController : NetworkBehaviour
 			Debug.Log("OnNetworkDespawn");
 			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
 			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
-
 			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadComplete;
+			foreach (var item in PlayerController.players)
+			{
+				item.GetComponent<NetworkObject>().Despawn(true);
+			}
 		}
 		base.OnNetworkDespawn();
 	}
