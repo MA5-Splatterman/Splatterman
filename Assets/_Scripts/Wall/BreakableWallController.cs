@@ -24,25 +24,29 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
     {
         particles.SetActive(true);
         particles.transform.parent = null;
-        Destroy(particles, brickParticle.main.duration > smokeParticle.main.duration ? brickParticle.main.duration : smokeParticle.main.duration);
         yield return new WaitForSeconds(0.1f);
         spriteRenderer.enabled = false;
         if (!hasRolledPowerupDrop)
         {
             if (IsServer)
             {
-                DropPowerup();
+
             }
-        }
-        if (IsServer)
-        {
-            Destroy(gameObject,0.6f);
         }
         yield return new WaitForSeconds(0.5f);
         var smokeEmission = smokeParticle.emission;
         var brickEmission = brickParticle.emission;
         smokeEmission.enabled = false;
         brickEmission.enabled = false;
+    }
+    IEnumerator OnServerBreak()
+    {
+        yield return new WaitForSeconds(0.3f);
+        if (!hasRolledPowerupDrop)
+        {
+            DropPowerup();
+        }
+        Destroy(gameObject);
     }
 
     private void DropPowerup()
@@ -66,5 +70,9 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
         this.color = color;
         explosionCreatedBy.UpdateScore(3);
         HasBeenHitClientRpc();
+        if (IsServer)
+        {
+            StartCoroutine(OnServerBreak());
+        }
     }
 }
