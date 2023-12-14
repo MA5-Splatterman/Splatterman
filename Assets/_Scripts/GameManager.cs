@@ -20,6 +20,7 @@ public class GameManager : NetworkBehaviour {
 	
 	[SerializeField] private SceneReference _mainMenuScene;
 
+	private bool _roundEndloaded = false;
     public override void OnNetworkSpawn()
     {
         instance = this;
@@ -162,10 +163,12 @@ public class GameManager : NetworkBehaviour {
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void EndRoundServerRpc(TeamColor color)
-    {
-        gameIsActive.Value = false;
-        Debug.Log("Game ended" + color.ToString() + " won!");
+    private void EndRoundServerRpc(TeamColor color) {
+		if ( _roundEndloaded ) { return; }
+		_roundEndloaded = true;
+
+		gameIsActive.Value = false;
+        Debug.Log($"Game ServerRPC Ended:{color} won!");
         if (IsHost)
         {
             EndRoundClientRpc(color);
@@ -179,8 +182,8 @@ public class GameManager : NetworkBehaviour {
     [ClientRpc]
     private void EndRoundClientRpc(TeamColor color)
     {
-        Debug.Log("Game ended" + color.ToString() + " won!");
-        RaiseOnGameEnd(color);
+		Debug.Log( $"Game ClientRPC Ended:{color} won!" );
+		RaiseOnGameEnd(color);
     }
 
 
