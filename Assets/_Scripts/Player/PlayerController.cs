@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Services.Leaderboards;
@@ -113,8 +111,11 @@ public class PlayerController : NetworkBehaviour, IExplodable
         {
             PlayerCount--;
             players.Remove(this);
-            GameManager.instance.RecalculateGameState();
-        }
+
+			if ( GameManager.instance != default) { 
+			    GameManager.instance.RecalculateGameState();
+			}
+		}
     }
 
     private void OnDisable()

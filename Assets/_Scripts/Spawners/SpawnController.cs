@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
@@ -48,7 +47,9 @@ public class SpawnController : NetworkBehaviour
 				break;
 			}
 		}
-		idPlayer.Despawn(true);
+		if ( idPlayer != null ) { 
+			idPlayer.Despawn( true ); 
+		}
 	}
 
 	public override void OnNetworkDespawn()
