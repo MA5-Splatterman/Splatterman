@@ -2284,7 +2284,19 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1587348545733900915}
+        m_TargetAssemblyTypeName: LoadingScreenController, Assembly-CSharp
+        m_MethodName: StartClient
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -3843,6 +3855,9 @@ MonoBehaviour:
   ReconnectPrefab: {fileID: 6469743791962067760, guid: 8d49dee856dbb4f42aea90a6422b5dde, type: 3}
   LobbyPanelPrefab: {fileID: 3196906593248647752, guid: 659c352a322598043b13c4b53878b899, type: 3}
   LobbyPanelParent: {fileID: 3932790967525222852}
+  Relay: {fileID: 0}
+  Lobby: {fileID: 0}
+  Leaderboard: {fileID: 0}
 --- !u!223 &4356205848172206952
 Canvas:
   m_ObjectHideFlags: 0
