@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
@@ -26,7 +27,10 @@ public class SpawnController : NetworkBehaviour
 
 	private void OnLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
 	{
-		foreach (var item in clientsCompleted)
+		var connections = NetworkManager.Singleton.ConnectedClientsIds.ToArray().Distinct();
+		Debug.Log("Connections" + clientsCompleted.Count());
+		Debug.Log("Unique Connections" + connections.Count());
+		foreach (var item in connections)
 		{
 			SpawnPlayer(item);
 		}
