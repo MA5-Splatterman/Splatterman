@@ -34,7 +34,10 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
                 DropPowerup();
             }
         }
-        Destroy(gameObject, 0.6f);
+        if (IsServer)
+        {
+            Destroy(gameObject,0.6f);
+        }
         yield return new WaitForSeconds(0.5f);
         var smokeEmission = smokeParticle.emission;
         var brickEmission = brickParticle.emission;

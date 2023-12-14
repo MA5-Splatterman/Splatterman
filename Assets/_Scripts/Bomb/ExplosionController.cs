@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using Unity.Netcode;
@@ -139,11 +140,18 @@ public class ExplosionController : NetworkBehaviour
                     .SetSpriteClientRpc(((i == explosionLength - 1) ? end : line).name, team.Value);
             }
 
-    
+
             _explosion.transform.position = transform.position + new Vector3(direction.x * (i + 1), direction.y * (i + 1), 0);
-            Destroy(_explosion, 2f);
+            if (IsServer)
+            {
+
+                Destroy(_explosion, 2f);
+            }
         }
-        Destroy(gameObject, 2f);
+        if (IsServer)
+        {
+            Destroy(gameObject, 2f);
+        }
     }
 
     private int CalculateExplosionLength(RaycastHit2D hit, Vector2 direction)

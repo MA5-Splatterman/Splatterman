@@ -48,6 +48,7 @@ public class SpawnController : NetworkBehaviour
 				break;
 			}
 		}
+		
 		if ( idPlayer != null ) { 
 			idPlayer.Despawn( true ); 
 		}

@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using Unity.Netcode;
-
+using System;
+using Random = UnityEngine.Random;
 public enum powerUp
 {
     Speed,
@@ -121,6 +121,7 @@ public class PowerUpController : NetworkBehaviour, IExplodable
 
     public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)
     {
+        if(!IsServer) return;
         Destroy(gameObject);
     }
 }
