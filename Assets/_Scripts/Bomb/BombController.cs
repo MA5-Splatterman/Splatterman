@@ -39,7 +39,7 @@ public class BombController : NetworkBehaviour, IExplodable
 
     }
 
-    public void BombPlaced(TeamColor _team, Vector2 position)
+    public void BombPlaced(TeamColor _team, Vector2 position, int explosionRange)
     {
         if (IsServer)
         {
@@ -48,6 +48,7 @@ public class BombController : NetworkBehaviour, IExplodable
             var particleMain = bombParticle.main;
             particleMain.startLifetime = bombFuse;
             particleMain.stopAction = ParticleSystemStopAction.Callback;
+            bombExplosionRange = explosionRange;
             bombParticle.Emit(1);
             bombParticle.Stop();
             var particleEmission = bombParticle.emission;
