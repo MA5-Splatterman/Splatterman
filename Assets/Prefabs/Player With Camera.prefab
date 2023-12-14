@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2785146980
+  GlobalObjectIdHash: 3227928563
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -374,6 +374,8 @@ MonoBehaviour:
   bombPierce:
     m_InternalValue: 0
   team:
+    m_InternalValue: 0
+  playerScore:
     m_InternalValue: 0
   playerCamera: {fileID: 8517955134445692717}
   anim: {fileID: 5688889204108494932}
@@ -452,9 +454,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.27992976}
+  m_Offset: {x: 0, y: -0.24741745}
   serializedVersion: 2
-  m_Radius: 0.22007024
+  m_Radius: 0.25258255
 --- !u!58 &695452337464003961
 CircleCollider2D:
   m_ObjectHideFlags: 0
