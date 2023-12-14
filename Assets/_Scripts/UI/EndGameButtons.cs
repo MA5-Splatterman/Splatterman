@@ -41,7 +41,6 @@ public class EndGamePopup : MonoBehaviour
 		if (NetworkManager.Singleton.IsServer)
 		{
 			NetworkManager.Singleton.SceneManager.LoadScene(_currentScene.Name, LoadSceneMode.Single);
-			_gameManager.StartLogic(0);
 		}
 	}
 	/// <summary>
