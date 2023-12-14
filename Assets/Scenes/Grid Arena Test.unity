@@ -33479,6 +33479,9 @@ MonoBehaviour:
   curBluePlayers:
     m_InternalValue: 0
   paintableTileManager: {fileID: 159459331}
+  _mainMenuScene:
+    asset: {fileID: 102900000, guid: 65532f94edc7dfb4f95ddbaf25912947, type: 3}
+    guid: 65532f94edc7dfb4f95ddbaf25912947
   gameIsActive:
     m_InternalValue: 0
 --- !u!4 &1946340264
