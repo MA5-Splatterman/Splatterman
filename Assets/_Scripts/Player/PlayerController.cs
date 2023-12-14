@@ -188,7 +188,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void OnDropBombPerformed(InputAction.CallbackContext context)
     {
-        if (IsOwner && GameManager.instance.gameIsActive.Value)
+        if (IsOwner)
         {
             DropBombServerRpc();
         }
@@ -197,6 +197,10 @@ public class PlayerController : NetworkBehaviour, IExplodable
     [ServerRpc]
     private void DropBombServerRpc()
     {
+        if(GameManager.instance.gameIsActive.Value == false)
+        {
+            return;
+        }
         Vector3 position = transform.position;
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
         bomb.GetComponent<NetworkObject>().Spawn();
