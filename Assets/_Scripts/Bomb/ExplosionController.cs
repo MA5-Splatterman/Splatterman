@@ -14,6 +14,7 @@ public class ExplosionController : NetworkBehaviour
 
     [SerializeField] private GameObject explosion;
     private NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>(TeamColor.NONE);
+    private PlayerController owner;
 
     [SerializeField] private LayerMask layermask;
     [SerializeField] private LayerMask layermaskWithBreakable;
@@ -29,9 +30,10 @@ public class ExplosionController : NetworkBehaviour
         team.OnValueChanged += HandleTeamChanged;
     }
 
-    public void SpawnExplosion(Vector2 positionToSpawn, int _explosionRange, TeamColor _team)
+    public void SpawnExplosion(Vector2 positionToSpawn, int _explosionRange, TeamColor _team, PlayerController player)
     {
         // Server
+        owner = player;
         transform.position = positionToSpawn;
         explosionRange.Value = _explosionRange;
         team.Value = _team;
@@ -110,13 +112,13 @@ public class ExplosionController : NetworkBehaviour
                 if (hit.transform.CompareTag("Wall")) break;
                 if (hit.transform.CompareTag("Breakable"))
                 {
-                    hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
+                    hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value, owner);
                     break;
                 }
-                if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Bomb") || hit.transform.CompareTag("Paintable"))
+                if (hit.transform.CompareTag("Player") || hit.transform.CompareTag("Bomb") || hit.transform.CompareTag("Paintable") || hit.transform.CompareTag("Powerup"))
                 {
                     Debug.Log("Explosion hit: " + hit.transform.tag);
-                    hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value);
+                    hit.transform.GetComponent<IExplodable>().ExplosionHit(team.Value, owner);
                 }
             }
         }

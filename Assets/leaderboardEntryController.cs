@@ -9,5 +9,10 @@ public class leaderboardEntryController : MonoBehaviour
     [SerializeField] private TMP_Text playerName;
     [SerializeField] private TMP_Text points;
 
-    //private void SetEntry
+    public void SetEntryValues(string rank, string playerName, string points)
+    {
+        leaderboardRank.text = rank;
+        this.playerName.text = playerName;
+        this.points.text = points;
+    }
 }
