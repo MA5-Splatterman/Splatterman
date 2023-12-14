@@ -16,14 +16,15 @@ public class RelayManager : MonoBehaviour
     public bool IsLoggedIn { get { return AuthenticationService.Instance.IsSignedIn; } }
 
     // Start is called before the first frame update
-    private void Awake() {
+    private void Awake()
+    {
         AuthManager.OnServicesInitialized += OnServicesInitialized;
     }
 
     private void OnServicesInitialized()
     {
         // ?
-        NetworkManager.Singleton.SceneManager.PostSynchronizationSceneUnloading = true;
+
     }
 
     public static async Task CreateRelay(bool host)
@@ -35,6 +36,7 @@ public class RelayManager : MonoBehaviour
         //Debug.Log( _joinCode );
 
         var unityTranport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
         if (host)
         {
             unityTranport.SetHostRelayData(
