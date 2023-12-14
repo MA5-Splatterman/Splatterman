@@ -32,8 +32,17 @@ public class SpawnController : NetworkBehaviour
 		Debug.Log("Unique Connections" + connections.Count());
 		foreach (var item in connections)
 		{
+			if (NetworkManager.Singleton.ConnectedClients[item].PlayerObject == null)
+			{
+				SpawnPlayer(item);
+			}
+			else
+			{
+				NetworkManager.Singleton.ConnectedClients[item].PlayerObject.Despawn(true);
+				SpawnPlayer(item);
+			}
+
 			Debug.Log("[OnLoadComplete] Spawning player : " + item);
-			SpawnPlayer(item);
 		}
 	}
 
