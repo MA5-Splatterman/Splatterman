@@ -191,7 +191,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
         bomb.GetComponent<NetworkObject>().Spawn();
         BombController bombController = bomb.GetComponent<BombController>();
-        bombController.BombPlaced(team.Value, position);
+        bombController.BombPlaced(team.Value, position, bombRange.Value);
 
     }
     public NetworkVariable<bool> isDead = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
