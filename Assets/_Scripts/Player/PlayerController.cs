@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Leaderboards;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class PlayerController : NetworkBehaviour, IExplodable
 {
@@ -15,6 +17,8 @@ public class PlayerController : NetworkBehaviour, IExplodable
     [SerializeField] NetworkVariable<bool> bombPierce = new NetworkVariable<bool>();
 
     public NetworkVariable<TeamColor> team = new NetworkVariable<TeamColor>();
+
+    [SerializeField] private NetworkVariable<double> playerScore = new NetworkVariable<double>();
 
     [Header("Project Variables")]
     [SerializeField] private GameObject playerCamera;
@@ -90,11 +94,16 @@ public class PlayerController : NetworkBehaviour, IExplodable
             GameManager.instance?.RecalculateGameState();
             AssignTeam(team.Value);
         }
-
         _relayManager = FindFirstObjectByType<RelayManager>();
         _interfaceController = FindFirstObjectByType<InterfaceController>();
 
         UpdateTeamColor();
+    }
+
+    private void Start()
+    {
+        GameManager.instance.OnGameEnd += UploadScore;
+
     }
 
     public override void OnNetworkDespawn()
@@ -190,13 +199,21 @@ public class PlayerController : NetworkBehaviour, IExplodable
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
         bomb.GetComponent<NetworkObject>().Spawn();
         BombController bombController = bomb.GetComponent<BombController>();
-        bombController.BombPlaced(team.Value, position, bombRange.Value);
+        bombController.BombPlaced(this, team.Value, position, bombRange.Value);
 
     }
     public NetworkVariable<bool> isDead = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public void ExplosionHit(TeamColor color)
+    public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)
     {
         isDead.Value = true;
+        if (color == team.Value)
+        {
+            explosionCreatedBy.UpdateScore(-25);
+        }
+        else
+        {
+            explosionCreatedBy.UpdateScore(50);
+        }
     }
 
     public void UpdateStats(powerUp stat, int amountToChangeBy)
@@ -227,5 +244,15 @@ public class PlayerController : NetworkBehaviour, IExplodable
                 bombPierce.Value = true;
                 break;
         }
+    }
+
+    public void UpdateScore(double ValueToUpdateBy)
+    {
+        playerScore.Value += ValueToUpdateBy;
+    }
+
+    private async void UploadScore(TeamColor color)
+    {
+        var playerEntry = await LeaderboardsService.Instance.AddPlayerScoreAsync("Splatterman_Leaderboard", playerScore.Value);
     }
 }

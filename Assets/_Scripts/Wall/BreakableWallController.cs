@@ -44,20 +44,24 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
 
     private void DropPowerup()
     {
-        hasRolledPowerupDrop = true;
-        if (Random.Range(0, 101) > PowerupDropProbability)
+        if (IsServer)
         {
-            return;
+            hasRolledPowerupDrop = true;
+            if (Random.Range(0, 101) > PowerupDropProbability)
+            {
+                return;
+            }
+            GameObject GO = Instantiate(powerup, transform);
+            GO.GetComponent<NetworkObject>().Spawn();
+            GO.GetComponent<PowerUpController>().SetTeam(color);
+            GO.transform.parent = null;
         }
-        GameObject GO = Instantiate(powerup, transform);
-        GO.GetComponent<NetworkObject>().Spawn();
-        GO.GetComponent<PowerUpController>().SetTeam(color);
-        GO.transform.parent = null;
     }
 
-    public void ExplosionHit(TeamColor color)
+    public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)
     {
         this.color = color;
+        explosionCreatedBy.UpdateScore(3);
         HasBeenHitClientRpc();
     }
 }

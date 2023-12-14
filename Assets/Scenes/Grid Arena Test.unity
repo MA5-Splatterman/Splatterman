@@ -32556,7 +32556,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.625
+  orthographic size: 8.4375
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -32645,7 +32645,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
   m_AssetsPPU: 32
-  m_RefResolutionX: 480
+  m_RefResolutionX: 668
   m_RefResolutionY: 360
   m_CropFrame: 0
   m_GridSnapping: 2
@@ -38755,10 +38755,58 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1161051272659588080, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1161051272659588080, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1161051272659588080, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1161051272659588080, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1161051272659588080, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1161051272659588080, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3595524527070407263, guid: eba1a9b25928972468a53480215117db, type: 3}
       propertyPath: manager
       value: 
       objectReference: {fileID: 1946340263}
+    - target: {fileID: 3753241866350108780, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3753241866350108780, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3753241866350108780, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3753241866350108780, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3753241866350108780, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3753241866350108780, guid: eba1a9b25928972468a53480215117db, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5288548202605919057, guid: eba1a9b25928972468a53480215117db, type: 3}
       propertyPath: m_Name
       value: InterfaceController
