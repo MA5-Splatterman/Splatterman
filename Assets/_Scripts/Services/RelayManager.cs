@@ -23,6 +23,7 @@ public class RelayManager : MonoBehaviour
     private void OnServicesInitialized()
     {
         // ?
+        NetworkManager.Singleton.SceneManager.PostSynchronizationSceneUnloading = true;
     }
 
     public static async Task CreateRelay(bool host)
