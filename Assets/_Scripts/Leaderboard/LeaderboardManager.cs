@@ -15,12 +15,6 @@ public class LeaderboardManager : MonoBehaviour
     [SerializeField] private TMP_InputField nameInput, scoreInput;
     [SerializeField] private int scoreToAdd;
 
-    private async void Awake()
-    {
-        await UnityServices.InitializeAsync();
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-    }
-
     public async void AddScore(double score)
     {
         var playerEntry = await LeaderboardsService.Instance.AddPlayerScoreAsync(leaderboardID, score);
