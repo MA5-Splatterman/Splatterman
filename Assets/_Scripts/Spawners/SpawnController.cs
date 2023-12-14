@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
@@ -20,7 +21,18 @@ public class SpawnController : NetworkBehaviour
 		{
 			_spawnLocations.Add(child);
 		}
+		NetworkManager.Singleton.SceneManager.OnSynchronizeComplete += OnSynchronizeComplete;
 	}
+
+	private void OnSynchronizeComplete(ulong clientId)
+	{
+		if (IsServer)
+		{
+			Debug.Log("Spawning player on sync complete: " + clientId);
+			SpawnPlayer(clientId);
+		}
+	}
+
 	public override void OnNetworkSpawn()
 	{
 		if (IsServer)
@@ -62,6 +74,7 @@ public class SpawnController : NetworkBehaviour
 		{
 			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
 			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
+			NetworkManager.Singleton.SceneManager.OnSynchronizeComplete -= OnSynchronizeComplete;
 		}
 	}
 
