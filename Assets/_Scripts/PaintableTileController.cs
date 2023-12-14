@@ -29,7 +29,7 @@ public class PaintableTileController : NetworkBehaviour, IExplodable
 
     public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)
     {
-        if (PaintColor.Value == color)
+        if (PaintColor.Value != color)
         {
             PaintColor.Value = color;
             explosionCreatedBy.UpdateScore(1);
