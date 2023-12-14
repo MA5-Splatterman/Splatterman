@@ -15,11 +15,16 @@ public class PaintableTileController : NetworkBehaviour, IExplodable
         if (tileManager == null)
         {
             tileManager = FindObjectOfType<PaintableTileManager>();
-            PaintColor.OnValueChanged += (previousValue, newValue) =>
-            {
-                UpdateColor(newValue);
-            };
         }
+        PaintColor.OnValueChanged += (previousValue, newValue) =>
+        {
+            UpdateColor(newValue);
+        };
+    }
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        PaintColor.OnValueChanged -= (previousValue, newValue) => {  UpdateColor(newValue); };
     }
 
     public void ExplosionHit(TeamColor color)
