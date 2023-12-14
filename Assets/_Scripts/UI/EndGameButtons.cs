@@ -15,16 +15,18 @@ public class EndGamePopup : MonoBehaviour {
 	private void OnEnable () {
 		_animator.SetBool( "MenuOpen", true );
 	}
+
 	private void OnDisable () {
 		_animator.SetBool( "MenuOpen", false );
 	}
-
 	/// <summary>
 	/// SceneLoad Main Menu
 	/// </summary>
 	public void ToMainMenu () {
-		NetworkManager.Singleton.SceneManager.LoadScene( _mainMenuScene.Name, LoadSceneMode.Single );
-		NetworkManager.Singleton.Shutdown();
+
+		if ( NetworkManager.Singleton.IsServer ) {
+			NetworkManager.Singleton.SceneManager.LoadScene( _mainMenuScene.Name, LoadSceneMode.Single );
+		}
 	}
 	/// <summary>
 	/// SceneLoad This Scene
