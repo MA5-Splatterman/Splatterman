@@ -105,6 +105,7 @@ public class GameManager : NetworkBehaviour {
         {
             instance = null;
         }
+        base.OnNetworkDespawn();
     }
     public NetworkVariable<bool> gameIsActive = new NetworkVariable<bool>(false);
 	private bool _processingSceneEvents;

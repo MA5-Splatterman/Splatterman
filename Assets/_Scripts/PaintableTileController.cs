@@ -23,8 +23,8 @@ public class PaintableTileController : NetworkBehaviour, IExplodable
     }
     public override void OnNetworkDespawn()
     {
-        base.OnNetworkDespawn();
         PaintColor.OnValueChanged -= (previousValue, newValue) => {  UpdateColor(newValue); };
+        base.OnNetworkDespawn();
     }
 
     public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)

@@ -30,6 +30,8 @@ public class EndGamePopup : MonoBehaviour
 
 		if (NetworkManager.Singleton.IsServer)
 		{
+
+			NetworkManager.Singleton.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
 			NetworkManager.Singleton.SceneManager.LoadScene(_mainMenuScene.Name, LoadSceneMode.Single);
 		}
 	}
@@ -40,6 +42,7 @@ public class EndGamePopup : MonoBehaviour
 	{
 		if (NetworkManager.Singleton.IsServer)
 		{
+			NetworkManager.Singleton.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
 			NetworkManager.Singleton.SceneManager.LoadScene(_currentScene.Name, LoadSceneMode.Single);
 		}
 	}
