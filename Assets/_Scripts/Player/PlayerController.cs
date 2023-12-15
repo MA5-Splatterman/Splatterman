@@ -104,6 +104,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
         base.OnNetworkDespawn();
         if (IsServer)
         {
+            Debug.Log("Despawning player : " + OwnerClientId);
             PlayerCount--;
             players.Remove(this);
 

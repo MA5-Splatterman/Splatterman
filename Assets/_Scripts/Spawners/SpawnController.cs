@@ -38,7 +38,7 @@ public class SpawnController : NetworkBehaviour
 			}
 			else
 			{
-				NetworkManager.Singleton.ConnectedClients[item].PlayerObject.Despawn(true);
+				// NetworkManager.Singleton.ConnectedClients[item].PlayerObject.Despawn(true);
 				SpawnPlayer(item);
 			}
 
@@ -50,13 +50,25 @@ public class SpawnController : NetworkBehaviour
 	{
 		if (IsServer)
 		{
-			Debug.Log("OnNetworkSpawn");
+			Debug.Log("OnEnable");
 			var connections = NetworkManager.Singleton.ConnectedClientsIds;
 			NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
 			NetworkManager.Singleton.OnClientDisconnectCallback += PlayerDisconnected;
 			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnLoadComplete;
 
 		}
+		base.OnNetworkSpawn();
+	}
+	public override void OnDestroy()
+	{
+		if (IsServer)
+		{
+			Debug.Log("OnDisable");
+			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
+			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
+			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadComplete;
+		}
+		base.OnDestroy();
 	}
 
 	private void PlayerConnect(ulong id)
@@ -84,21 +96,7 @@ public class SpawnController : NetworkBehaviour
 			idPlayer.Despawn(true);
 		}
 	}
-	public override void OnNetworkDespawn()
-	{
-		if (IsServer)
-		{
-			Debug.Log("OnNetworkDespawn");
-			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
-			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
-			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadComplete;
-			foreach (var item in PlayerController.players)
-			{
-				item.GetComponent<NetworkObject>().Despawn(true);
-			}
-		}
-		base.OnNetworkDespawn();
-	}
+
 
 	private void SpawnPlayer(ulong id)
 	{
