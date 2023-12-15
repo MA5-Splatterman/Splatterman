@@ -232,6 +232,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
                 break;
 
             case powerUp.BombPower:
+                if (bombRange.Value == 1 && amountToChangeBy == -1) return;
                 bombRange.Value += amountToChangeBy;
                 break;
 
