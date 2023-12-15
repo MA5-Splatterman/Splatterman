@@ -70,6 +70,9 @@ public class EndGamePopup : MonoBehaviour
 			}
 			NetworkManager.Singleton.Shutdown(true);
 			StartCoroutine(ToMainMenuCoroutine());
+		} else {
+			NetworkManager.Singleton.Shutdown( true );
+			StartCoroutine( ToMainMenuCoroutine() );
 		}
 	}
 
