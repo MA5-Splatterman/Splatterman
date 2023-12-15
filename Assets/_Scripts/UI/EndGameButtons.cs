@@ -41,6 +41,7 @@ public class EndGamePopup : MonoBehaviour
 	private void OnDisable()
 	{
 		_animator.SetBool("MenuOpen", false);
+		if(NetworkManager.Singleton != null) return;
 		if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
 		{
 			NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
@@ -72,6 +73,7 @@ public class EndGamePopup : MonoBehaviour
 	private IEnumerator ToMainMenuCoroutine()
 	{
 		while (NetworkManager.Singleton.ShutdownInProgress) { yield return null; }
+		Destroy(NetworkManager.Singleton.gameObject);
 		SceneManager.LoadScene(_mainMenuScene.Name, LoadSceneMode.Single);
 	}
 

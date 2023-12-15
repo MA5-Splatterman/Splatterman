@@ -64,6 +64,7 @@ public class SpawnController : NetworkBehaviour
 		if (IsServer)
 		{
 			Debug.Log("OnDisable");
+			if(NetworkManager.Singleton != null) return;
 			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
 			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
 			NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= OnLoadComplete;
