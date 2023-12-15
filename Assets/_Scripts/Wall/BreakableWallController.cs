@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class BreakableWallController : NetworkBehaviour, IExplodable
 {
-    [SerializeField] private ParticleSystem smokeParticle, brickParticle;
+
     [SerializeField] private GameObject particles;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private GameObject powerup;
@@ -17,45 +17,23 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
     [ClientRpc]
     public void HasBeenHitClientRpc()
     {
-        StartCoroutine(OnBreak());
-    }
-
-    IEnumerator OnBreak()
-    {
-        particles.SetActive(true);
-        particles.transform.parent = null;
-        Destroy(particles, brickParticle.main.duration > smokeParticle.main.duration ? brickParticle.main.duration : smokeParticle.main.duration);
-        yield return new WaitForSeconds(0.1f);
+        Debug.Log("ClientRpc");
+        Instantiate(particles, transform.position, Quaternion.identity);
         spriteRenderer.enabled = false;
-        if (!hasRolledPowerupDrop)
-        {
-            if (IsServer)
-            {
-                DropPowerup();
-            }
-        }
-        Destroy(gameObject, 0.6f);
-        yield return new WaitForSeconds(0.5f);
-        var smokeEmission = smokeParticle.emission;
-        var brickEmission = brickParticle.emission;
-        smokeEmission.enabled = false;
-        brickEmission.enabled = false;
     }
 
     private void DropPowerup()
     {
-        if (IsServer)
+
+        hasRolledPowerupDrop = true;
+        if (Random.Range(0, 101) > PowerupDropProbability)
         {
-            hasRolledPowerupDrop = true;
-            if (Random.Range(0, 101) > PowerupDropProbability)
-            {
-                return;
-            }
-            GameObject GO = Instantiate(powerup, transform);
-            GO.GetComponent<NetworkObject>().Spawn();
-            GO.GetComponent<PowerUpController>().SetTeam(color);
-            GO.transform.parent = null;
+            return;
         }
+        GameObject GO = Instantiate(powerup, transform.position, Quaternion.identity);
+        GO.GetComponent<NetworkObject>().Spawn(true);
+        GO.GetComponent<PowerUpController>().SetTeam(color);
+
     }
 
     public void ExplosionHit(TeamColor color, PlayerController explosionCreatedBy)
@@ -63,5 +41,8 @@ public class BreakableWallController : NetworkBehaviour, IExplodable
         this.color = color;
         explosionCreatedBy.UpdateScore(3);
         HasBeenHitClientRpc();
+        if (!hasRolledPowerupDrop) DropPowerup();
+        GetComponent<NetworkObject>().Despawn();
+
     }
 }

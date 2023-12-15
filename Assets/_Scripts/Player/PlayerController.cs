@@ -37,8 +37,6 @@ public class PlayerController : NetworkBehaviour, IExplodable
     //private Vector2 movementVector = Vector2.zero;
     public static int PlayerCount = 0;
     public static HashSet<PlayerController> players = new HashSet<PlayerController>();
-    private RelayManager _relayManager;
-    private InterfaceController _interfaceController;
 
     public override void OnNetworkSpawn()
     {
@@ -92,9 +90,6 @@ public class PlayerController : NetworkBehaviour, IExplodable
             GameManager.instance?.RecalculateGameState();
             AssignTeam(team.Value);
         }
-        _relayManager = FindFirstObjectByType<RelayManager>();
-        _interfaceController = FindFirstObjectByType<InterfaceController>();
-
         UpdateTeamColor();
     }
 
@@ -109,13 +104,15 @@ public class PlayerController : NetworkBehaviour, IExplodable
         base.OnNetworkDespawn();
         if (IsServer)
         {
+            Debug.Log("Despawning player : " + OwnerClientId);
             PlayerCount--;
             players.Remove(this);
 
-			if ( GameManager.instance != default) { 
-			    GameManager.instance.RecalculateGameState();
-			}
-		}
+            if (GameManager.instance != default)
+            {
+                GameManager.instance.RecalculateGameState();
+            }
+        }
     }
 
     private void OnDisable()
@@ -187,7 +184,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private void OnDropBombPerformed(InputAction.CallbackContext context)
     {
-        if (IsOwner && GameManager.instance.gameIsActive.Value )
+        if (IsOwner)
         {
             DropBombServerRpc();
         }
@@ -196,9 +193,18 @@ public class PlayerController : NetworkBehaviour, IExplodable
     [ServerRpc]
     private void DropBombServerRpc()
     {
+        if(GameManager.instance.gameIsActive.Value == false)
+        {
+            return;
+        }
+        // Posibly check if there is already a bomb in this location
+        if(Physics2D.OverlapCircle(transform.position, 0.5f, LayerMask.GetMask("Bomb")) != null)
+        {
+            return;
+        }
         Vector3 position = transform.position;
         GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
-        bomb.GetComponent<NetworkObject>().Spawn();
+        bomb.GetComponent<NetworkObject>().Spawn(true);
         BombController bombController = bomb.GetComponent<BombController>();
         bombController.BombPlaced(this, team.Value, position, bombRange.Value);
 
@@ -226,6 +232,7 @@ public class PlayerController : NetworkBehaviour, IExplodable
                 break;
 
             case powerUp.BombPower:
+                if (bombRange.Value == 1 && amountToChangeBy == -1) return;
                 bombRange.Value += amountToChangeBy;
                 break;
 
@@ -254,6 +261,9 @@ public class PlayerController : NetworkBehaviour, IExplodable
 
     private async void UploadScore(TeamColor color)
     {
-        var playerEntry = await LeaderboardsService.Instance.AddPlayerScoreAsync("Splatterman_Leaderboard", playerScore.Value);
+        if (IsLocalPlayer)
+        {
+            var playerEntry = await LeaderboardsService.Instance.AddPlayerScoreAsync("Splatterman_Leaderboard", playerScore.Value);
+        }
     }
 }
