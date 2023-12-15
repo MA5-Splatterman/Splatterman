@@ -77,7 +77,6 @@ public class EndGamePopup : MonoBehaviour
 				item.Value.PlayerObject.Despawn(true);
 			}
 
-			Destroy(NetworkManager.Singleton.gameObject);
 			NetworkManager.Singleton.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
 			NetworkManager.Singleton.SceneManager.LoadScene(_currentScene.Name, LoadSceneMode.Single);
 		}
