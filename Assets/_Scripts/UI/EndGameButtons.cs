@@ -44,7 +44,7 @@ public class EndGamePopup : MonoBehaviour
 	private void OnDisable()
 	{
 		_animator.SetBool("MenuOpen", false);
-		if(NetworkManager.Singleton != null) return;
+		if(NetworkManager.Singleton == null) return;
 		if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
 		{
 			NetworkManager.Singleton.OnServerStopped -= OnServerStopped;
