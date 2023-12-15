@@ -13,11 +13,22 @@ public class LoadingScreenController : MonoBehaviour
 	public async void StartHost()
 	{
 		await RelayManager.CreateRelay(true);
+		StartHostInternal();
+	}
+	public void StartHostInternal()
+	{
 		NetworkManager.Singleton.StartHost();
 		NetworkManager.Singleton.SceneManager.PostSynchronizationSceneUnloading = true;
 		NetworkManager.Singleton.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
 		NetworkManager.Singleton.SceneManager.ActiveSceneSynchronizationEnabled = true;
 		NetworkManager.Singleton.SceneManager.LoadScene(mapRef.Name, LoadSceneMode.Single);
+	}
+	public void StartClientInternal()
+	{
+		NetworkManager.Singleton.StartClient();
+		NetworkManager.Singleton.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
+		NetworkManager.Singleton.SceneManager.PostSynchronizationSceneUnloading = true;
+		NetworkManager.Singleton.SceneManager.ActiveSceneSynchronizationEnabled = true;
 	}
 
 	public async void StartClient()
