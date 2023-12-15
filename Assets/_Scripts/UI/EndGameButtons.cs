@@ -22,7 +22,14 @@ public class EndGamePopup : MonoBehaviour
 		if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
 		{
 			NetworkManager.Singleton.OnServerStopped += OnServerStopped;
+			NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
 		}
+	}
+
+	private void OnClientDisconnectCallback(ulong ClientId)
+	{
+		NetworkManager.Singleton.Shutdown(true);
+		StartCoroutine(ToMainMenuCoroutine());
 	}
 
 	private void OnServerStopped(bool obj)
@@ -40,7 +47,6 @@ public class EndGamePopup : MonoBehaviour
 	/// </summary>
 	public void ToMainMenu()
 	{
-
 		if (NetworkManager.Singleton.IsServer)
 		{
 			var list = NetworkManager.Singleton.ConnectedClients.ToArray();
