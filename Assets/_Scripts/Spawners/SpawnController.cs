@@ -27,10 +27,7 @@ public class SpawnController : NetworkBehaviour
 
 	private void OnLoadComplete(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
 	{
-		var connections = clientsCompleted.ToArray().Distinct();
-		Debug.Log("Connections" + clientsCompleted.Count());
-		Debug.Log("Unique Connections" + connections.Count());
-		foreach (var item in connections)
+		foreach (var item in clientsCompleted.ToArray().Distinct() )
 		{
 			if (NetworkManager.Singleton.ConnectedClients[item].PlayerObject == null)
 			{
@@ -38,11 +35,8 @@ public class SpawnController : NetworkBehaviour
 			}
 			else
 			{
-				// NetworkManager.Singleton.ConnectedClients[item].PlayerObject.Despawn(true);
 				SpawnPlayer(item);
 			}
-
-			Debug.Log("[OnLoadComplete] Spawning player : " + item);
 		}
 	}
 
@@ -50,7 +44,6 @@ public class SpawnController : NetworkBehaviour
 	{
 		if (IsServer)
 		{
-			Debug.Log("OnEnable");
 			var connections = NetworkManager.Singleton.ConnectedClientsIds;
 			NetworkManager.Singleton.OnClientConnectedCallback += PlayerConnect;
 			NetworkManager.Singleton.OnClientDisconnectCallback += PlayerDisconnected;
@@ -63,8 +56,7 @@ public class SpawnController : NetworkBehaviour
 	{
 		if (IsServer)
 		{
-			Debug.Log("OnDisable");
-			if(NetworkManager.Singleton != null) return;
+			// IF this next line is not here, it will trigger a duplication bug of the player characters, which is a different type of game.
 			if (NetworkManager.Singleton == null) return; 
 			NetworkManager.Singleton.OnClientConnectedCallback -= SpawnPlayer;
 			NetworkManager.Singleton.OnClientDisconnectCallback -= PlayerDisconnected;
@@ -75,13 +67,13 @@ public class SpawnController : NetworkBehaviour
 
 	private void PlayerConnect(ulong id)
 	{
-		Debug.Log("[CONNECTION] Spawning player on networkSpawn: " + id);
+		//Debug.Log("[CONNECTION] Spawning player on networkSpawn: " + id);
 		SpawnPlayer(id);
 	}
 
 	private void PlayerDisconnected(ulong id)
 	{
-		Debug.Log("[DISCONNECTION] Despawning player on networkSpawn: " + id);
+		//Debug.Log("[DISCONNECTION] Despawning player on networkSpawn: " + id);
 		NetworkObject idPlayer = null;
 		foreach (var player in PlayerController.players)
 		{
@@ -105,6 +97,4 @@ public class SpawnController : NetworkBehaviour
 
 		Instantiate(_playerPrefab).GetComponent<NetworkObject>().SpawnAsPlayerObject(id, true);
 	}
-
-
 }
