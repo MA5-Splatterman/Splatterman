@@ -247,7 +247,7 @@ public class LobbyInstance : MonoBehaviour
 
     public async Task KickPlayer(string playerId)
     {
-        if (playerId == AuthenticationService.Instance.PlayerId)
+        if (Lobby.HostId == AuthenticationService.Instance.PlayerId && Lobby.HostId == playerId)
         {
             await LobbyService.Instance.DeleteLobbyAsync(Lobby.Id);
             return;
