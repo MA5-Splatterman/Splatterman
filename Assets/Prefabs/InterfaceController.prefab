@@ -407,6 +407,7 @@ MonoBehaviour:
     asset: {fileID: 102900000, guid: 1479c936c67aa224187b29d0ea035e5e, type: 3}
     guid: 1479c936c67aa224187b29d0ea035e5e
   _gameManager: {fileID: 0}
+  _rematchButton: {fileID: 4118770654850918812}
 --- !u!222 &2458756027550118700
 CanvasRenderer:
   m_ObjectHideFlags: 0

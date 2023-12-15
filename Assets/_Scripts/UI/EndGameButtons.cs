@@ -16,11 +16,14 @@ public class EndGamePopup : MonoBehaviour
 
 	[SerializeField] private GameManager _gameManager;
 
+	[SerializeField] private GameObject _rematchButton;
+
 	private void OnEnable()
 	{
 		_animator.SetBool("MenuOpen", true);
 		if (NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsHost)
 		{
+			_rematchButton.SetActive(false);
 			NetworkManager.Singleton.OnServerStopped += OnServerStopped;
 			NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
 		}
