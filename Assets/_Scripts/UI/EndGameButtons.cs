@@ -6,15 +6,13 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class EndGamePopup : MonoBehaviour
+public class EndGameButtons : MonoBehaviour
 {
 	[SerializeField] private Animator _animator;
 
 	[SerializeField] private SceneReference _mainMenuScene;
 
 	[SerializeField] private SceneReference _currentScene;
-
-	[SerializeField] private GameManager _gameManager;
 
 	[SerializeField] private GameObject _rematchButton;
 
